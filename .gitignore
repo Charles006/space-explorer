@@ -1,0 +1,51 @@
+# Build outputs
+*.iml
+.gradle/
+.kotlin/
+**/build/
+**/.gradle/
+/build
+/captures
+.externalNativeBuild
+.cxx
+
+# IDE - IntelliJ / Android Studio
+.idea/caches/
+.idea/libraries/
+.idea/modules/
+.idea/modules.xml
+.idea/workspace.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+.idea/deploymentTargetSelector.xml
+.idea/copilot.data.migration*.xml
+
+# IDE - VSCode
+.vscode/
+
+# AI tooling artifacts
+.claude/
+.cursor/
+.aider*
+.continue/
+.copilot/
+
+# OS
+.DS_Store
+
+# Local config (contains API key & SDK path)
+local.properties
+
+# Generated files
+**/generated/
+**/*.apk
+**/*.aab
+
+# Logs
+*.log
+*.swp
+
+# Keystores (NEVER commit)
+*.jks
+*.keystore
+release.keystore
