@@ -24,9 +24,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import coil.compose.SubcomposeAsyncImage
+import com.space_explorer.R
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
@@ -94,7 +96,7 @@ private fun ThumbnailWithPlayButton(
     ) {
         Icon(
             imageVector = Icons.Filled.PlayCircle,
-            contentDescription = "Reproducir video",
+            contentDescription = stringResource(R.string.cd_play_video),
             tint = Color.White.copy(alpha = 0.9f),
             modifier = Modifier.size(80.dp)
         )

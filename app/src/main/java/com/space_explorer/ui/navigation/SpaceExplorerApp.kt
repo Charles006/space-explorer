@@ -1,5 +1,6 @@
 package com.space_explorer.ui.navigation
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Public
@@ -14,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -22,6 +24,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.space_explorer.R
 import com.space_explorer.ui.screens.DetailScreen
 import com.space_explorer.ui.screens.FavoritesScreen
 import com.space_explorer.ui.screens.HomeScreen
@@ -40,6 +43,7 @@ fun SpaceExplorerApp(
             if (currentRoute in TOP_LEVEL_ROUTES) {
                 NavigationBar {
                     bottomBarItems.forEach { item ->
+                        val label = stringResource(item.labelRes)
                         NavigationBarItem(
                             selected = currentRoute == item.destination.route,
                             onClick = {
@@ -51,8 +55,8 @@ fun SpaceExplorerApp(
                                     restoreState = true
                                 }
                             },
-                            icon = { Icon(item.icon, contentDescription = item.label) },
-                            label = { Text(item.label) },
+                            icon = { Icon(item.icon, contentDescription = label) },
+                            label = { Text(label) },
                             modifier = Modifier.testTag("tab_${item.destination.route}")
                         )
                     }
@@ -101,13 +105,13 @@ fun SpaceExplorerApp(
 
 private data class BottomBarItem(
     val destination: Destination,
-    val label: String,
+    @StringRes val labelRes: Int,
     val icon: ImageVector
 )
 
 private val bottomBarItems = listOf(
-    BottomBarItem(HomeDestination, "Explorar", Icons.Outlined.Public),
-    BottomBarItem(FavoritesDestination, "Favoritos", Icons.Outlined.Star)
+    BottomBarItem(HomeDestination, R.string.nav_tab_explore, Icons.Outlined.Public),
+    BottomBarItem(FavoritesDestination, R.string.nav_tab_favorites, Icons.Outlined.Star)
 )
 
 private val TOP_LEVEL_ROUTES = setOf(HomeDestination.route, FavoritesDestination.route)

@@ -28,16 +28,19 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.space_explorer.R
 import com.space_explorer.domain.model.Astronomy
 import com.space_explorer.ui.components.ApodCard
 import com.space_explorer.ui.components.EmptyFavorites
 import com.space_explorer.ui.components.ErrorState
 import com.space_explorer.ui.components.LoadingState
 import com.space_explorer.ui.components.ThemeToggleButton
+import com.space_explorer.ui.components.rememberErrorText
 import com.space_explorer.ui.viewmodel.FavoritesViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,13 +53,14 @@ fun FavoritesScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var searchQuery by rememberSaveable { mutableStateOf("") }
+    val errorText = rememberErrorText(uiState.error)
 
     LaunchedEffect(searchQuery) { viewModel.onSearchQueryChanged(searchQuery) }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Favoritos") },
+                title = { Text(stringResource(R.string.favorites_title)) },
                 actions = {
                     ThemeToggleButton(isDarkTheme = isDarkTheme, onToggle = onToggleTheme)
                 },
@@ -70,11 +74,8 @@ fun FavoritesScreen(
             uiState.isLoading ->
                 LoadingState(modifier = Modifier.padding(innerPadding))
 
-            uiState.errorMessage != null ->
-                ErrorState(
-                    message = uiState.errorMessage!!,
-                    modifier = Modifier.padding(innerPadding)
-                )
+            errorText != null ->
+                ErrorState(message = errorText, modifier = Modifier.padding(innerPadding))
 
             else -> FavoritesList(
                 modifier = Modifier.padding(innerPadding),
@@ -134,12 +135,12 @@ private fun FavoritesFilterField(query: String, onQueryChange: (String) -> Unit)
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
         singleLine = true,
-        placeholder = { Text("Filtrar favoritos") },
+        placeholder = { Text(stringResource(R.string.favorites_filter_placeholder)) },
         leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null) },
         trailingIcon = {
             if (query.isNotEmpty()) {
                 IconButton(onClick = { onQueryChange("") }) {
-                    Icon(Icons.Outlined.Clear, contentDescription = "Limpiar")
+                    Icon(Icons.Outlined.Clear, contentDescription = stringResource(R.string.cd_clear))
                 }
             }
         },

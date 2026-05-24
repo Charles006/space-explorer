@@ -35,7 +35,7 @@ class AstronomyViewModel @Inject constructor(
 
     fun loadInitialData() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+            _uiState.update { it.copy(isLoading = true, error = null) }
             val today = DateUtils.today()
             val start = DateUtils.daysAgo(Constants.PAGE_SIZE - 1)
             repository.getAstronomyRange(start, today)
@@ -56,16 +56,14 @@ class AstronomyViewModel @Inject constructor(
             repository.getAstronomyRange(start, end)
                 .onSuccess { newItems -> appendPage(newItems, fallbackStart = start) }
                 .onFailure { throwable ->
-                    _uiState.update {
-                        it.copy(isLoadingMore = false, errorMessage = throwable.userMessage())
-                    }
+                    _uiState.update { it.copy(isLoadingMore = false, error = throwable.toError()) }
                 }
         }
     }
 
     fun refresh() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isRefreshing = true, errorMessage = null) }
+            _uiState.update { it.copy(isRefreshing = true, error = null) }
             val today = DateUtils.today()
             val start = DateUtils.daysAgo(Constants.PAGE_SIZE - 1)
             repository.getAstronomyRange(start, today)
@@ -81,9 +79,7 @@ class AstronomyViewModel @Inject constructor(
                     }
                 }
                 .onFailure { throwable ->
-                    _uiState.update {
-                        it.copy(isRefreshing = false, errorMessage = throwable.userMessage())
-                    }
+                    _uiState.update { it.copy(isRefreshing = false, error = throwable.toError()) }
                 }
         }
     }
@@ -99,11 +95,11 @@ class AstronomyViewModel @Inject constructor(
 
     fun onRemoteSearch(date: String) {
         if (!DateUtils.isValidIsoDate(date)) {
-            _uiState.update { it.copy(errorMessage = AstronomyError.InvalidDate(date).userMessage) }
+            _uiState.update { it.copy(error = AstronomyError.InvalidDate(date)) }
             return
         }
         viewModelScope.launch {
-            _uiState.update { it.copy(isRemoteSearching = true, errorMessage = null) }
+            _uiState.update { it.copy(isRemoteSearching = true, error = null) }
             repository.getAstronomyByDate(date)
                 .onSuccess { astronomy ->
                     _uiState.update { current ->
@@ -118,7 +114,7 @@ class AstronomyViewModel @Inject constructor(
                 }
                 .onFailure { throwable ->
                     _uiState.update {
-                        it.copy(isRemoteSearching = false, errorMessage = throwable.userMessage())
+                        it.copy(isRemoteSearching = false, error = throwable.toError())
                     }
                 }
         }
@@ -131,7 +127,7 @@ class AstronomyViewModel @Inject constructor(
     }
 
     fun dismissError() {
-        _uiState.update { it.copy(errorMessage = null) }
+        _uiState.update { it.copy(error = null) }
     }
 
     private fun observeFavorites() {
@@ -157,7 +153,7 @@ class AstronomyViewModel @Inject constructor(
                 items = items,
                 filteredItems = applyLocalFilter(items, current.searchQuery),
                 isLoading = false,
-                errorMessage = null,
+                error = null,
                 endReached = false
             )
         }
@@ -175,7 +171,7 @@ class AstronomyViewModel @Inject constructor(
                 items = merged,
                 filteredItems = applyLocalFilter(merged, current.searchQuery),
                 isLoadingMore = false,
-                errorMessage = null
+                error = null
             )
         }
     }
@@ -184,7 +180,7 @@ class AstronomyViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 isLoading = if (clearLoading) false else it.isLoading,
-                errorMessage = throwable.userMessage()
+                error = throwable.toError()
             )
         }
     }
@@ -199,8 +195,8 @@ class AstronomyViewModel @Inject constructor(
         }
     }
 
-    private fun Throwable.userMessage(): String = when (this) {
-        is AstronomyError -> userMessage
-        else -> message ?: "Error desconocido"
+    private fun Throwable.toError(): AstronomyError = when (this) {
+        is AstronomyError -> this
+        else -> AstronomyError.Unknown(this)
     }
 }

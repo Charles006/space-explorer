@@ -39,20 +39,17 @@ class DetailViewModel @Inject constructor(
     fun retry() = loadDetail()
 
     fun toggleFavorite() {
-        val current = _uiState.value.astronomy ?: run {
-            _uiState.update { it.copy(errorMessage = "No hay contenido cargado para marcar.") }
-            return
-        }
+        val current = _uiState.value.astronomy ?: return
         viewModelScope.launch {
             runCatching { repository.toggleFavorite(current) }
                 .onFailure { throwable ->
-                    _uiState.update { it.copy(errorMessage = throwable.userMessage()) }
+                    _uiState.update { it.copy(error = throwable.toError()) }
                 }
         }
     }
 
     fun dismissError() {
-        _uiState.update { it.copy(errorMessage = null) }
+        _uiState.update { it.copy(error = null) }
     }
 
     private fun observeFavoriteState() {
@@ -68,21 +65,19 @@ class DetailViewModel @Inject constructor(
 
     private fun loadDetail() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+            _uiState.update { it.copy(isLoading = true, error = null) }
             repository.getAstronomyByDate(astronomyId)
                 .onSuccess { astronomy ->
                     _uiState.update { it.copy(astronomy = astronomy, isLoading = false) }
                 }
                 .onFailure { throwable ->
-                    _uiState.update {
-                        it.copy(isLoading = false, errorMessage = throwable.userMessage())
-                    }
+                    _uiState.update { it.copy(isLoading = false, error = throwable.toError()) }
                 }
         }
     }
 
-    private fun Throwable.userMessage(): String = when (this) {
-        is AstronomyError -> userMessage
-        else -> message ?: "Error desconocido"
+    private fun Throwable.toError(): AstronomyError = when (this) {
+        is AstronomyError -> this
+        else -> AstronomyError.Unknown(this)
     }
 }

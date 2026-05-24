@@ -54,13 +54,13 @@ class AstronomyViewModelTest {
             val state = awaitItem()
             assertThat(state.isLoading).isFalse()
             assertThat(state.items).hasSize(1)
-            assertThat(state.errorMessage).isNull()
+            assertThat(state.error).isNull()
             cancelAndIgnoreRemainingEvents()
         }
     }
 
     @Test
-    fun loadInitialData_domainError_surfacesLocalizedMessage() = runTest {
+    fun loadInitialData_networkFailure_exposesNetworkError() = runTest {
         whenever(repository.getAstronomyRange(any(), any()))
             .thenReturn(Result.failure(AstronomyError.Network()))
         whenever(repository.observeFavoriteIds()).thenReturn(MutableStateFlow(emptySet()))
@@ -68,11 +68,11 @@ class AstronomyViewModelTest {
         val viewModel = AstronomyViewModel(repository)
         advanceUntilIdle()
 
-        assertThat(viewModel.uiState.value.errorMessage).contains("Sin conexion")
+        assertThat(viewModel.uiState.value.error).isInstanceOf(AstronomyError.Network::class.java)
     }
 
     @Test
-    fun loadInitialData_genericException_fallsBackToMessage() = runTest {
+    fun loadInitialData_genericException_wrappedAsUnknown() = runTest {
         whenever(repository.getAstronomyRange(any(), any()))
             .thenReturn(Result.failure(RuntimeException("boom")))
         whenever(repository.observeFavoriteIds()).thenReturn(MutableStateFlow(emptySet()))
@@ -80,7 +80,9 @@ class AstronomyViewModelTest {
         val viewModel = AstronomyViewModel(repository)
         advanceUntilIdle()
 
-        assertThat(viewModel.uiState.value.errorMessage).isEqualTo("boom")
+        val error = viewModel.uiState.value.error
+        assertThat(error).isInstanceOf(AstronomyError.Unknown::class.java)
+        assertThat(error?.cause?.message).isEqualTo("boom")
     }
 
     @Test
@@ -104,7 +106,7 @@ class AstronomyViewModelTest {
     }
 
     @Test
-    fun onRemoteSearch_invalidDate_setsErrorWithoutCallingRepo() = runTest {
+    fun onRemoteSearch_invalidDate_emitsInvalidDateError() = runTest {
         whenever(repository.getAstronomyRange(any(), any())).thenReturn(Result.success(emptyList()))
         whenever(repository.observeFavoriteIds()).thenReturn(MutableStateFlow(emptySet()))
 
@@ -113,7 +115,7 @@ class AstronomyViewModelTest {
 
         viewModel.onRemoteSearch("invalid-date")
 
-        assertThat(viewModel.uiState.value.errorMessage).contains("Formato")
+        assertThat(viewModel.uiState.value.error).isInstanceOf(AstronomyError.InvalidDate::class.java)
     }
 
     @Test
@@ -162,11 +164,13 @@ class AstronomyViewModelTest {
 
         viewModel.loadNextPage()
         advanceUntilIdle()
-        assertThat(viewModel.uiState.value.errorMessage).contains("boom transient")
+        val midError = viewModel.uiState.value.error
+        assertThat(midError).isInstanceOf(AstronomyError.Unknown::class.java)
+        assertThat(midError?.cause?.message).isEqualTo("boom transient")
 
         viewModel.loadNextPage()
         advanceUntilIdle()
-        assertThat(viewModel.uiState.value.errorMessage).isNull()
+        assertThat(viewModel.uiState.value.error).isNull()
         assertThat(viewModel.uiState.value.items).hasSize(2)
     }
 

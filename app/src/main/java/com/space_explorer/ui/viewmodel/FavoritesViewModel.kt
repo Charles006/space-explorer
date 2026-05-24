@@ -32,7 +32,7 @@ class FavoritesViewModel @Inject constructor(
         FavoritesUiState(
             favorites = applyFilter(favorites, query),
             isLoading = false,
-            errorMessage = null,
+            error = null,
             searchQuery = query
         )
     }
@@ -42,7 +42,7 @@ class FavoritesViewModel @Inject constructor(
                 FavoritesUiState(
                     favorites = emptyList(),
                     isLoading = false,
-                    errorMessage = throwable.userMessage()
+                    error = throwable.toError()
                 )
             )
         }
@@ -72,8 +72,8 @@ class FavoritesViewModel @Inject constructor(
         }
     }
 
-    private fun Throwable.userMessage(): String = when (this) {
-        is AstronomyError -> userMessage
-        else -> message ?: "Error desconocido"
+    private fun Throwable.toError(): AstronomyError = when (this) {
+        is AstronomyError -> this
+        else -> AstronomyError.Unknown(this)
     }
 }

@@ -26,12 +26,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
+import com.space_explorer.R
 import com.space_explorer.ui.util.DateUtils
 
 @Composable
@@ -56,12 +58,12 @@ fun AstronomySearchBar(
                 .fillMaxWidth()
                 .testTag("search_field"),
             singleLine = true,
-            placeholder = { Text("Buscar por titulo o fecha (YYYY-MM-DD)") },
+            placeholder = { Text(stringResource(R.string.search_placeholder)) },
             leadingIcon = { Icon(Icons.Outlined.Search, contentDescription = null) },
             trailingIcon = {
                 if (query.isNotEmpty()) {
                     IconButton(onClick = { onQueryChange("") }) {
-                        Icon(Icons.Outlined.Clear, contentDescription = "Limpiar")
+                        Icon(Icons.Outlined.Clear, contentDescription = stringResource(R.string.cd_clear))
                     }
                 }
             },
@@ -89,7 +91,7 @@ fun AstronomySearchBar(
             ) {
                 AssistChip(
                     onClick = { onRemoteSearch(query) },
-                    label = { Text("Buscar fecha en NASA") },
+                    label = { Text(stringResource(R.string.search_remote_chip)) },
                     leadingIcon = {
                         Icon(Icons.Outlined.CalendarMonth, contentDescription = null)
                     },

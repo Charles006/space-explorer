@@ -1,41 +1,32 @@
 package com.space_explorer.domain.error
 
+import androidx.annotation.StringRes
+import com.space_explorer.R
+
 sealed class AstronomyError(
-    val userMessage: String,
+    @StringRes val messageRes: Int,
+    val messageArgs: List<Any> = emptyList(),
     cause: Throwable? = null
-) : Exception(userMessage, cause) {
+) : Exception(cause) {
 
-    class Network(cause: Throwable? = null) : AstronomyError(
-        "Sin conexion a internet. Verifica tu red.",
-        cause
-    )
+    class Network(cause: Throwable? = null) :
+        AstronomyError(R.string.error_network, cause = cause)
 
-    class Unauthorized(cause: Throwable? = null) : AstronomyError(
-        "API key invalida. Revisa tu NASA_API_KEY en local.properties.",
-        cause
-    )
+    class Unauthorized(cause: Throwable? = null) :
+        AstronomyError(R.string.error_unauthorized, cause = cause)
 
-    class RateLimited(cause: Throwable? = null) : AstronomyError(
-        "Limite de peticiones alcanzado. Intenta de nuevo en unos minutos.",
-        cause
-    )
+    class RateLimited(cause: Throwable? = null) :
+        AstronomyError(R.string.error_rate_limited, cause = cause)
 
-    class ServerUnavailable(cause: Throwable? = null) : AstronomyError(
-        "El servidor de NASA no responde. Intenta luego.",
-        cause
-    )
+    class ServerUnavailable(cause: Throwable? = null) :
+        AstronomyError(R.string.error_server_unavailable, cause = cause)
 
-    class InvalidDate(value: String) : AstronomyError(
-        "Formato de fecha invalido. Usa YYYY-MM-DD (recibido: '$value')."
-    )
+    class InvalidDate(value: String) :
+        AstronomyError(R.string.error_invalid_date, listOf(value))
 
-    class HttpError(val code: Int, message: String, cause: Throwable? = null) : AstronomyError(
-        "Error HTTP $code: $message",
-        cause
-    )
+    class HttpError(val code: Int, httpMessage: String, cause: Throwable? = null) :
+        AstronomyError(R.string.error_http, listOf(code, httpMessage), cause)
 
-    class Unknown(cause: Throwable) : AstronomyError(
-        cause.message ?: "Error desconocido",
-        cause
-    )
+    class Unknown(cause: Throwable) :
+        AstronomyError(R.string.error_unknown, cause = cause)
 }

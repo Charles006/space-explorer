@@ -76,6 +76,7 @@ class ApodCardTest {
             )
         }
 
-        composeRule.onNodeWithContentDescription("Quitar de favoritos").assertIsDisplayed()
+        val ctx = androidx.test.core.app.ApplicationProvider.getApplicationContext<android.content.Context>()
+        composeRule.onNodeWithContentDescription(ctx.getString(com.space_explorer.R.string.cd_remove_from_favorites)).assertIsDisplayed()
     }
 }

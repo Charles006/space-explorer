@@ -39,9 +39,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.space_explorer.R
 import com.space_explorer.core.Constants
 import com.space_explorer.domain.model.Astronomy
 import com.space_explorer.ui.components.ApodCard
@@ -51,6 +53,7 @@ import com.space_explorer.ui.components.ErrorState
 import com.space_explorer.ui.components.InlineLoadingFooter
 import com.space_explorer.ui.components.LoadingState
 import com.space_explorer.ui.components.ThemeToggleButton
+import com.space_explorer.ui.components.rememberErrorText
 import com.space_explorer.ui.state.HomeUiState
 import com.space_explorer.ui.viewmodel.AstronomyViewModel
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -79,11 +82,15 @@ fun HomeScreen(
         endReached = uiState.endReached,
         onLoadMore = viewModel::loadNextPage
     )
-    ErrorSnackbarEffect(
-        errorMessage = uiState.errorMessage,
-        hostState = snackbarHostState,
-        onDismiss = viewModel::dismissError
-    )
+
+    val errorText = rememberErrorText(uiState.error)
+    val okLabel = stringResource(R.string.common_action_ok)
+    LaunchedEffect(errorText) {
+        errorText?.let {
+            snackbarHostState.showSnackbar(message = it, actionLabel = okLabel)
+            viewModel.dismissError()
+        }
+    }
 
     val showScrollToTop by remember {
         derivedStateOf { listState.firstVisibleItemIndex > Constants.SCROLL_TO_TOP_THRESHOLD }
@@ -92,11 +99,14 @@ fun HomeScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Space Explorer") },
+                title = { Text(stringResource(R.string.home_title)) },
                 actions = {
                     ThemeToggleButton(isDarkTheme = isDarkTheme, onToggle = onToggleTheme)
                     IconButton(onClick = viewModel::refresh) {
-                        Icon(Icons.Outlined.Refresh, contentDescription = "Refrescar")
+                        Icon(
+                            Icons.Outlined.Refresh,
+                            contentDescription = stringResource(R.string.home_action_refresh)
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -109,7 +119,10 @@ fun HomeScreen(
                 FloatingActionButton(onClick = {
                     coroutineScope.launch { listState.animateScrollToItem(0) }
                 }) {
-                    Icon(Icons.Outlined.ArrowUpward, contentDescription = "Volver arriba")
+                    Icon(
+                        Icons.Outlined.ArrowUpward,
+                        contentDescription = stringResource(R.string.home_action_scroll_to_top)
+                    )
                 }
             }
         },
@@ -118,6 +131,7 @@ fun HomeScreen(
         HomeBody(
             modifier = Modifier.padding(innerPadding),
             uiState = uiState,
+            errorText = errorText,
             listState = listState,
             searchQuery = searchQuery,
             onSearchQueryChange = { searchQuery = it },
@@ -133,6 +147,7 @@ fun HomeScreen(
 private fun HomeBody(
     modifier: Modifier,
     uiState: HomeUiState,
+    errorText: String?,
     listState: LazyListState,
     searchQuery: String,
     onSearchQueryChange: (String) -> Unit,
@@ -145,8 +160,8 @@ private fun HomeBody(
         uiState.isLoading && uiState.items.isEmpty() ->
             LoadingState(modifier = modifier)
 
-        uiState.errorMessage != null && uiState.items.isEmpty() ->
-            ErrorState(message = uiState.errorMessage, onRetry = onRetry, modifier = modifier)
+        errorText != null && uiState.items.isEmpty() ->
+            ErrorState(message = errorText, onRetry = onRetry, modifier = modifier)
 
         else -> HomeList(
             modifier = modifier,
@@ -191,8 +206,8 @@ private fun HomeList(
         if (uiState.isEmpty) {
             item {
                 EmptyState(
-                    title = "Sin resultados",
-                    description = "Intenta con otra busqueda o limpia el filtro."
+                    title = stringResource(R.string.home_empty_title),
+                    description = stringResource(R.string.home_empty_description)
                 )
             }
         } else {
@@ -233,18 +248,4 @@ private fun shouldPrefetch(listState: LazyListState): Boolean {
     if (info.totalItemsCount == 0) return false
     val lastVisibleIndex = info.visibleItemsInfo.lastOrNull()?.index ?: return false
     return lastVisibleIndex >= info.totalItemsCount - Constants.PAGINATION_PREFETCH_DISTANCE
-}
-
-@Composable
-private fun ErrorSnackbarEffect(
-    errorMessage: String?,
-    hostState: SnackbarHostState,
-    onDismiss: () -> Unit
-) {
-    LaunchedEffect(errorMessage) {
-        errorMessage?.let { message ->
-            hostState.showSnackbar(message = message, actionLabel = "OK")
-            onDismiss()
-        }
-    }
 }

@@ -41,18 +41,21 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
+import com.space_explorer.R
 import com.space_explorer.core.Constants
 import com.space_explorer.domain.model.Astronomy
 import com.space_explorer.ui.components.EmbeddedVideoPlayer
 import com.space_explorer.ui.components.ErrorState
 import com.space_explorer.ui.components.LoadingState
 import com.space_explorer.ui.components.ThemeToggleButton
+import com.space_explorer.ui.components.rememberErrorText
 import com.space_explorer.ui.util.DateUtils
 import com.space_explorer.ui.viewmodel.DetailViewModel
 
@@ -68,11 +71,11 @@ fun DetailScreen(
     val scrollState = rememberScrollState()
     val astronomy = uiState.astronomy
     val snackbarHostState = remember { SnackbarHostState() }
+    val errorText = rememberErrorText(uiState.error)
 
-    LaunchedEffect(uiState.errorMessage, astronomy) {
-        val message = uiState.errorMessage
-        if (message != null && astronomy != null) {
-            snackbarHostState.showSnackbar(message)
+    LaunchedEffect(errorText, astronomy) {
+        if (errorText != null && astronomy != null) {
+            snackbarHostState.showSnackbar(errorText)
             viewModel.dismissError()
         }
     }
@@ -93,8 +96,8 @@ fun DetailScreen(
         when {
             uiState.isLoading -> LoadingState(modifier = Modifier.padding(innerPadding))
 
-            astronomy == null && uiState.errorMessage != null -> ErrorState(
-                message = uiState.errorMessage!!,
+            astronomy == null && errorText != null -> ErrorState(
+                message = errorText,
                 onRetry = viewModel::retry,
                 modifier = Modifier.padding(innerPadding)
             )
@@ -119,25 +122,27 @@ private fun DetailTopBar(
     onToggleFavorite: () -> Unit
 ) {
     TopAppBar(
-        title = { Text(title?.take(30) ?: "Detalle") },
+        title = { Text(title?.take(30) ?: stringResource(R.string.detail_title_fallback)) },
         navigationIcon = {
             IconButton(onClick = onBack) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                    contentDescription = "Volver"
+                    contentDescription = stringResource(R.string.detail_action_back)
                 )
             }
         },
         actions = {
             ThemeToggleButton(isDarkTheme = isDarkTheme, onToggle = onToggleTheme)
             if (astronomy != null) {
+                val cdRes = if (astronomy.isFavorite) R.string.cd_remove_from_favorites
+                else R.string.cd_add_to_favorites
                 IconButton(
                     onClick = onToggleFavorite,
                     modifier = Modifier.testTag("detail_favorite_button")
                 ) {
                     Icon(
                         imageVector = if (astronomy.isFavorite) Icons.Filled.Star else Icons.Outlined.StarBorder,
-                        contentDescription = if (astronomy.isFavorite) "Quitar de favoritos" else "Agregar a favoritos",
+                        contentDescription = stringResource(cdRes),
                         tint = if (astronomy.isFavorite) MaterialTheme.colorScheme.primary
                         else MaterialTheme.colorScheme.onSurface
                     )
@@ -224,7 +229,7 @@ private fun DetailCoverError() {
     ) {
         Icon(
             imageVector = Icons.Outlined.BrokenImage,
-            contentDescription = "Contenido no disponible",
+            contentDescription = stringResource(R.string.cd_unavailable_content),
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.size(64.dp)
         )
@@ -249,7 +254,7 @@ private fun DetailMetadata(astronomy: Astronomy) {
         )
         astronomy.copyright?.let { copyright ->
             Text(
-                text = "Credito: $copyright",
+                text = stringResource(R.string.detail_credit_prefix, copyright),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

@@ -14,7 +14,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.space_explorer.R
 
 @Composable
 fun ThemeToggleButton(
@@ -36,33 +38,26 @@ fun ThemeToggleButton(
             if (dark) {
                 Icon(
                     imageVector = Icons.Outlined.LightMode,
-                    contentDescription = "Activar modo claro"
+                    contentDescription = stringResource(R.string.theme_toggle_to_light)
                 )
             } else {
                 Icon(
                     imageVector = Icons.Outlined.DarkMode,
-                    contentDescription = "Activar modo oscuro"
+                    contentDescription = stringResource(R.string.theme_toggle_to_dark)
                 )
             }
         }
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
-fun ThemeToggleButtonDarkPreview() {
-    ThemeToggleButton(
-        isDarkTheme = true,
-        onToggle = {}
-    )
+private fun ThemeToggleButtonDarkPreview() {
+    ThemeToggleButton(isDarkTheme = true, onToggle = {})
 }
 
 @Preview(showBackground = true)
 @Composable
-fun ThemeToggleButtonLightPreview() {
-    ThemeToggleButton(
-        isDarkTheme = false,
-        onToggle = {}
-    )
+private fun ThemeToggleButtonLightPreview() {
+    ThemeToggleButton(isDarkTheme = false, onToggle = {})
 }

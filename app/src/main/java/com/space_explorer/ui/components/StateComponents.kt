@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
@@ -29,20 +30,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
+import com.space_explorer.R
 
 @Composable
 fun LoadingState(modifier: Modifier = Modifier) {
+    val cd = stringResource(R.string.cd_loading)
     Column(
         modifier = modifier
             .fillMaxSize()
-            .semantics { contentDescription = "Cargando" },
+            .semantics { contentDescription = cd },
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         CircularProgressIndicator()
         Spacer(Modifier.height(16.dp))
         Text(
-            text = "Cargando contenido...",
+            text = stringResource(R.string.state_loading),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -51,15 +54,17 @@ fun LoadingState(modifier: Modifier = Modifier) {
 
 @Composable
 fun ErrorState(
-    message: String = "No se pudo cargar el contenido",
+    message: String? = null,
     onRetry: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
+    val resolved = message ?: stringResource(R.string.state_error_default_message)
+    val announcement = stringResource(R.string.state_error_announcement, resolved)
     Column(
         modifier = modifier
             .fillMaxSize()
             .padding(24.dp)
-            .semantics { contentDescription = "Error: $message" },
+            .semantics { contentDescription = announcement },
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -71,28 +76,30 @@ fun ErrorState(
         )
         Spacer(Modifier.height(16.dp))
         Text(
-            text = "Ups, algo salio mal",
+            text = stringResource(R.string.state_error_title),
             style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Center
         )
         Spacer(Modifier.height(8.dp))
         Text(
-            text = message,
+            text = resolved,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
         )
         if (onRetry != null) {
             Spacer(Modifier.height(16.dp))
-            Button(onClick = onRetry) { Text("Reintentar") }
+            Button(onClick = onRetry) {
+                Text(stringResource(R.string.state_action_retry))
+            }
         }
     }
 }
 
 @Composable
 fun EmptyState(
-    title: String = "Sin resultados",
-    description: String = "No se encontraron elementos",
+    title: String? = null,
+    description: String? = null,
     icon: ImageVector = Icons.Outlined.Search,
     modifier: Modifier = Modifier
 ) {
@@ -112,13 +119,13 @@ fun EmptyState(
         )
         Spacer(Modifier.height(16.dp))
         Text(
-            text = title,
+            text = title ?: stringResource(R.string.state_empty_title),
             style = MaterialTheme.typography.titleMedium,
             textAlign = TextAlign.Center
         )
         Spacer(Modifier.height(8.dp))
         Text(
-            text = description,
+            text = description ?: stringResource(R.string.state_empty_description),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
@@ -129,8 +136,8 @@ fun EmptyState(
 @Composable
 fun EmptyFavorites(modifier: Modifier = Modifier) {
     EmptyState(
-        title = "Aun no tienes favoritos",
-        description = "Marca elementos con la estrella desde la pantalla principal y los veras aqui.",
+        title = stringResource(R.string.favorites_empty_title),
+        description = stringResource(R.string.favorites_empty_description),
         icon = Icons.Outlined.Star,
         modifier = modifier
     )
@@ -162,7 +169,7 @@ private fun StatePreview(
     when (state) {
         PreviewState.LOADING -> LoadingState()
         PreviewState.ERROR -> ErrorState(message = "No se pudo conectar con el servidor", onRetry = {})
-        PreviewState.EMPTY -> EmptyState(title = "Sin resultados", description = "Intenta con otra busqueda")
+        PreviewState.EMPTY -> EmptyState()
         PreviewState.EMPTY_FAVORITES -> EmptyFavorites()
         PreviewState.INLINE_LOADING -> InlineLoadingFooter()
     }

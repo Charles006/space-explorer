@@ -1,3 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Space Explorer</string>
+
+    <!-- Common -->
+    <string name="common_action_ok">OK</string>
+    <string name="common_unknown_error">Error desconocido</string>
+
+    <!-- Navigation -->
+    <string name="nav_tab_explore">Explorar</string>
+    <string name="nav_tab_favorites">Favoritos</string>
+
+    <!-- Home -->
+    <string name="home_title">Space Explorer</string>
+    <string name="home_action_refresh">Refrescar</string>
+    <string name="home_action_scroll_to_top">Volver arriba</string>
+    <string name="home_empty_title">Sin resultados</string>
+    <string name="home_empty_description">Intenta con otra busqueda o limpia el filtro.</string>
+
+    <!-- Favorites -->
+    <string name="favorites_title">Favoritos</string>
+    <string name="favorites_filter_placeholder">Filtrar favoritos</string>
+    <string name="favorites_empty_title">Aun no tienes favoritos</string>
+    <string name="favorites_empty_description">Marca elementos con la estrella desde la pantalla principal y los veras aqui.</string>
+
+    <!-- Detail -->
+    <string name="detail_title_fallback">Detalle</string>
+    <string name="detail_action_back">Volver</string>
+    <string name="detail_credit_prefix">Credito: %1$s</string>
+    <string name="detail_no_content_to_favorite">No hay contenido cargado para marcar.</string>
+
+    <!-- Search bar -->
+    <string name="search_placeholder">Buscar por titulo o fecha (YYYY-MM-DD)</string>
+    <string name="search_remote_chip">Buscar fecha en NASA</string>
+
+    <!-- State components -->
+    <string name="state_loading">Cargando contenido...</string>
+    <string name="state_error_title">Ups, algo salio mal</string>
+    <string name="state_error_default_message">No se pudo cargar el contenido</string>
+    <string name="state_action_retry">Reintentar</string>
+    <string name="state_empty_title">Sin resultados</string>
+    <string name="state_empty_description">No se encontraron elementos</string>
+    <string name="state_error_announcement">Error: %1$s</string>
+
+    <!-- Content descriptions -->
+    <string name="cd_loading">Cargando</string>
+    <string name="cd_video">Video</string>
+    <string name="cd_remove_from_favorites">Quitar de favoritos</string>
+    <string name="cd_add_to_favorites">Agregar a favoritos</string>
+    <string name="cd_clear">Limpiar</string>
+    <string name="cd_play_video">Reproducir video</string>
+    <string name="cd_unavailable_content">Contenido no disponible</string>
+
+    <!-- Theme toggle -->
+    <string name="theme_toggle_to_light">Activar modo claro</string>
+    <string name="theme_toggle_to_dark">Activar modo oscuro</string>
+
+    <!-- Errors -->
+    <string name="error_network">Sin conexion a internet. Verifica tu red.</string>
+    <string name="error_unauthorized">API key invalida. Revisa tu NASA_API_KEY en local.properties.</string>
+    <string name="error_rate_limited">Limite de peticiones alcanzado. Intenta de nuevo en unos minutos.</string>
+    <string name="error_server_unavailable">El servidor de NASA no responde. Intenta luego.</string>
+    <string name="error_invalid_date">Formato de fecha invalido. Usa YYYY-MM-DD (recibido: \'%1$s\').</string>
+    <string name="error_http">Error HTTP %1$d: %2$s</string>
+    <string name="error_unknown">Error desconocido</string>
 </resources>

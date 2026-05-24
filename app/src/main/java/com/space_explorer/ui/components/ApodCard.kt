@@ -31,6 +31,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,6 +40,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
+import com.space_explorer.R
 import com.space_explorer.core.Constants
 import com.space_explorer.domain.model.Astronomy
 import com.space_explorer.ui.util.DateUtils
@@ -124,7 +126,7 @@ private fun VideoOverlay() {
         Box(contentAlignment = Alignment.Center) {
             Icon(
                 imageVector = Icons.Outlined.PlayCircle,
-                contentDescription = "Video",
+                contentDescription = stringResource(R.string.cd_video),
                 tint = MaterialTheme.colorScheme.onPrimary,
                 modifier = Modifier.size(56.dp)
             )
@@ -161,13 +163,14 @@ private fun CardFooter(astronomy: Astronomy, onToggleFavorite: () -> Unit) {
 
 @Composable
 private fun FavoriteToggle(astronomy: Astronomy, onToggle: () -> Unit) {
+    val cdRes = if (astronomy.isFavorite) R.string.cd_remove_from_favorites else R.string.cd_add_to_favorites
     IconButton(
         onClick = onToggle,
         modifier = Modifier.testTag("favorite_button_${astronomy.id}")
     ) {
         Icon(
             imageVector = if (astronomy.isFavorite) Icons.Filled.Star else Icons.Outlined.StarBorder,
-            contentDescription = if (astronomy.isFavorite) "Quitar de favoritos" else "Agregar a favoritos",
+            contentDescription = stringResource(cdRes),
             tint = if (astronomy.isFavorite) {
                 MaterialTheme.colorScheme.primary
             } else {
