@@ -32,4 +32,10 @@ object Constants {
 
     /** Length of an ISO-8601 date used as a heuristic before regex validation. */
     const val ISO_DATE_LENGTH: Int = 10
+
+    /** Aspect ratio for the hero image on the detail screen. */
+    const val DETAIL_COVER_ASPECT_RATIO: Float = 4f / 3f
+
+    /** Aspect ratio for cover images inside list cards. */
+    const val APOD_CARD_COVER_ASPECT_RATIO: Float = 16f / 10f
 }

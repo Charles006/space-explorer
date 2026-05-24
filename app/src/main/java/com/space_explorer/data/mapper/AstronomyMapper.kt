@@ -11,10 +11,12 @@ import com.space_explorer.domain.model.Astronomy
  * focused on serialization concerns and the domain model free of framework
  * annotations.
  *
- * All mappers are pure functions: no side effects, no null-only fallbacks
- * that would silently hide upstream contract violations. Required fields are
- * validated and any breach surfaces as a thrown [IllegalArgumentException]
- * caught upstream by [com.space_explorer.data.network.ApiErrorMapper].
+ * Mapping rules for media URLs:
+ *   * Image-type APOD       → imageUrl = response.url, videoUrl = null
+ *   * Video-type APOD       → imageUrl = response.thumbnailUrl (or empty),
+ *                             videoUrl = response.url (the YouTube/Vimeo embed)
+ *   * Blank / non-http URLs are normalized to empty string instead of
+ *     throwing so a single bad item never tumbles an entire page.
  */
 object AstronomyMapper {
 
@@ -26,7 +28,8 @@ object AstronomyMapper {
      *
      * @param response Raw API response.
      * @param isFavorite Whether the item exists in the local favorites table.
-     * @throws IllegalArgumentException if the response violates the documented contract.
+     * @throws IllegalArgumentException if `date`, `title` or `mediaType`
+     *         violate the contract (these are non-negotiable identifiers).
      */
     fun fromApi(response: ApodResponse, isFavorite: Boolean): Astronomy {
         require(response.date.isNotBlank()) { "APOD response without date" }
@@ -35,14 +38,28 @@ object AstronomyMapper {
             "Unsupported media_type: ${response.mediaType}"
         }
 
-        val displayUrl = resolveDisplayUrl(response)
+        val isVideo = response.mediaType == MEDIA_TYPE_VIDEO
+        val imageUrl: String = if (isVideo) {
+            // For videos: imageUrl is strictly the thumbnail (or empty).
+            // Never fall back to the embed URL — Coil cannot render that.
+            response.thumbnailUrl.toDisplayUrlOrEmpty()
+        } else {
+            response.url.toDisplayUrlOrEmpty()
+        }
+        val videoUrl: String? = if (isVideo) {
+            response.url.toDisplayUrlOrEmpty().ifBlank { null }
+        } else {
+            null
+        }
+
         return Astronomy(
             id = response.date,
             date = response.date,
             title = response.title,
             explanation = response.explanation,
-            imageUrl = displayUrl,
+            imageUrl = imageUrl,
             hdImageUrl = response.hdUrl,
+            videoUrl = videoUrl,
             mediaType = response.mediaType,
             copyright = response.copyright,
             isFavorite = isFavorite
@@ -57,6 +74,7 @@ object AstronomyMapper {
         explanation = entity.explanation,
         imageUrl = entity.imageUrl,
         hdImageUrl = entity.hdImageUrl,
+        videoUrl = entity.videoUrl,
         mediaType = entity.mediaType,
         copyright = entity.copyright,
         isFavorite = true
@@ -70,32 +88,14 @@ object AstronomyMapper {
         explanation = astronomy.explanation,
         imageUrl = astronomy.imageUrl,
         hdImageUrl = astronomy.hdImageUrl,
+        videoUrl = astronomy.videoUrl,
         mediaType = astronomy.mediaType,
         copyright = astronomy.copyright
     )
 
     /**
-     * Resolves the URL Coil should render for this APOD.
-     *
-     * For videos NASA returns an embed URL in [ApodResponse.url]; the actual
-     * frame we want is [ApodResponse.thumbnailUrl] when present. Images use
-     * [ApodResponse.url] directly.
-     *
-     * NASA occasionally returns items with a blank `url` or an unsupported
-     * scheme (interactive HTML, very recent posts pending media upload,
-     * experimental formats). [toDisplayUrlOrEmpty] normalizes those into an
-     * empty string so a single bad item never tumbles an entire batch — Coil
-     * already renders an error placeholder for blank URLs, so the user still
-     * sees title / date / explanation.
-     */
-    private fun resolveDisplayUrl(response: ApodResponse): String = when (response.mediaType) {
-        MEDIA_TYPE_VIDEO -> (response.thumbnailUrl ?: response.url).toDisplayUrlOrEmpty()
-        else -> response.url.toDisplayUrlOrEmpty()
-    }
-
-    /**
      * Returns the receiver if it is an http(s) URL, otherwise an empty string.
-     * Tolerates `null`, blank strings, and unsupported schemes (ftp, data, file).
+     * Tolerates `null`, blank strings and unsupported schemes (ftp, data, file).
      */
     private fun String?.toDisplayUrlOrEmpty(): String =
         if (this != null && startsWith("http", ignoreCase = true)) this else ""

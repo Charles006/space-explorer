@@ -86,6 +86,7 @@ class FavoriteDaoTest {
         explanation = "explanation",
         imageUrl = "https://image/$id.jpg",
         hdImageUrl = null,
+        videoUrl = null,
         mediaType = "image",
         copyright = null
     )

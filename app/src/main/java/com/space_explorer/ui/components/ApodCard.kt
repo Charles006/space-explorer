@@ -39,6 +39,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
+import com.space_explorer.core.Constants
 import com.space_explorer.domain.model.Astronomy
 import com.space_explorer.ui.util.DateUtils
 
@@ -83,7 +84,7 @@ private fun CardCover(astronomy: Astronomy) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .aspectRatio(COVER_ASPECT_RATIO)
+            .aspectRatio(Constants.APOD_CARD_COVER_ASPECT_RATIO)
             .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
     ) {
         // Short-circuit: skip the Coil request entirely when we know the URL is
@@ -192,8 +193,6 @@ private fun FavoriteToggle(astronomy: Astronomy, onToggle: () -> Unit) {
     }
 }
 
-private const val COVER_ASPECT_RATIO: Float = 16f / 10f
-
 // endregion
 
 // region ── Previews ───────────────────────────────────────────────────────
@@ -214,7 +213,8 @@ private class AstronomyPreviewProvider : PreviewParameterProvider<Astronomy> {
         title = title,
         date = "2024-01-1$id",
         imageUrl = "https://example.com/$id.jpg",
-        hdImageUrl = "https://example.com/$id-hd.jpg",
+        hdImageUrl = if (mediaType == "image") "https://example.com/$id-hd.jpg" else null,
+        videoUrl = if (mediaType == "video") "https://youtube.com/embed/$id" else null,
         explanation = "Preview text for $title",
         copyright = "NASA",
         mediaType = mediaType,

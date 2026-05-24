@@ -35,6 +35,7 @@ guardar imagenes astronomicas como favoritas.
 
 ### Funcionalidades adicionales
 
+- **Reproduccion de video in-app** via WebView con iframe (autoplay + playsinline), sin Intent al browser externo
 - **Toggle manual claro/oscuro** persistido con `SharedPreferences`
 - **Material 3 con dynamic color** (Material You) y modo oscuro automatico
 - **Errores tipados** mediante `AstronomyError` sealed class
@@ -164,6 +165,31 @@ en `core/Constants.kt`.
 - Removido `Paging 3` (dependencia declarada pero nunca usada).
 - Removido metodo `isFavorite()` del Repository (nunca llamado).
 - Consolidadas 4 `@Preview` redundantes en un unico provider parametrizado.
+
+### 8. WebView in-process para videos APOD (no ExoPlayer/Media3)
+
+Los videos de NASA APOD son embeds de YouTube / Vimeo. Las ToS de ambos
+proveedores **prohiben extraer el stream subyacente**, por lo que la unica
+forma soportada de reproducirlos es renderizar el player oficial — que es
+exactamente lo que hace un `<iframe>` dentro de un `WebView`.
+
+Trade-offs:
+
+| Opcion | Pros | Contras |
+|---|---|---|
+| **WebView + iframe** (elegido) | Cero deps nuevas, funciona con cualquier embed YouTube/Vimeo/MP4, cumple ToS | Ligeramente mas pesado en RAM que un player nativo |
+| ExoPlayer / Media3 | Player nativo, mejor UX | No puede reproducir embeds YouTube — bloqueado por ToS |
+| Intent al browser externo | Trivial | Saca al usuario de la app, mala UX, no es "in-app" |
+
+Detalles de implementacion:
+- Modelo: `Astronomy.videoUrl` (separado de `imageUrl`) evita que Coil intente
+  renderizar URLs de embed que no son imagenes.
+- Schema: migracion Room v1 -> v2 agrega columna `videoUrl` a favoritos sin
+  perder data existente.
+- Lifecycle: el WebView se destruye en `DisposableEffect.onDispose` para
+  evitar memory leaks y reproduccion en background.
+- UX: thumbnail + boton Play; tap inicia el WebView con `autoplay=1` y
+  `playsinline=1` inyectados via `buildEmbedHtml`.
 
 ---
 

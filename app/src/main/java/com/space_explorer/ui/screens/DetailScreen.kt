@@ -16,8 +16,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.BrokenImage
 import androidx.compose.material.icons.outlined.StarBorder
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
+import com.space_explorer.core.Constants
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -32,6 +35,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -44,6 +48,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.space_explorer.domain.model.Astronomy
+import com.space_explorer.ui.components.EmbeddedVideoPlayer
 import com.space_explorer.ui.components.ErrorState
 import com.space_explorer.ui.components.LoadingState
 import com.space_explorer.ui.components.ThemeToggleButton
@@ -182,24 +187,64 @@ private fun DetailCoverImage(astronomy: Astronomy) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .aspectRatio(DETAIL_COVER_ASPECT_RATIO)
+            .aspectRatio(Constants.DETAIL_COVER_ASPECT_RATIO)
             .padding(16.dp)
             .clip(RoundedCornerShape(24.dp))
     ) {
-        SubcomposeAsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(astronomy.hdImageUrl ?: astronomy.imageUrl)
-                .crossfade(true)
-                .build(),
-            contentDescription = astronomy.title,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop,
-            loading = {
-                Surface(
-                    color = MaterialTheme.colorScheme.surfaceVariant,
-                    modifier = Modifier.fillMaxSize()
-                ) {}
-            }
+        // Video-type APODs: render the in-app embedded player. Bail out early
+        // so we never fall through to Coil with an embed URL it cannot render.
+        if (astronomy.isVideo && !astronomy.videoUrl.isNullOrBlank()) {
+            EmbeddedVideoPlayer(
+                embedUrl = astronomy.videoUrl,
+                thumbnailUrl = astronomy.imageUrl,
+                contentDescription = astronomy.title,
+                modifier = Modifier.fillMaxSize()
+            )
+            return@Box
+        }
+
+        val displayUrl = astronomy.hdImageUrl ?: astronomy.imageUrl
+        if (displayUrl.isBlank()) {
+            DetailCoverError()
+        } else {
+            SubcomposeAsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(displayUrl)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = astronomy.title,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop,
+                loading = { DetailCoverPlaceholder() },
+                // Regression: the missing `error =` callback used to leave the
+                // screen stuck on the grey placeholder when Coil failed.
+                error = { DetailCoverError() }
+            )
+        }
+    }
+}
+
+@Composable
+private fun DetailCoverPlaceholder() {
+    Surface(
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        modifier = Modifier.fillMaxSize()
+    ) {}
+}
+
+@Composable
+private fun DetailCoverError() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .testTag("detail_cover_error"),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            imageVector = Icons.Outlined.BrokenImage,
+            contentDescription = "Contenido no disponible",
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(64.dp)
         )
     }
 }
@@ -235,7 +280,5 @@ private fun DetailMetadata(astronomy: Astronomy) {
         Spacer(Modifier.height(24.dp))
     }
 }
-
-private const val DETAIL_COVER_ASPECT_RATIO: Float = 4f / 3f
 
 // endregion

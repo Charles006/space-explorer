@@ -182,6 +182,7 @@ class AstronomyViewModelTest {
         explanation = "Explanation for $title",
         imageUrl = "https://image/$date.jpg",
         hdImageUrl = null,
+        videoUrl = null,
         mediaType = "image",
         copyright = null,
         isFavorite = isFavorite

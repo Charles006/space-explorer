@@ -22,7 +22,12 @@ object DatabaseModule {
             context,
             SpaceExplorerDatabase::class.java,
             SpaceExplorerDatabase.DATABASE_NAME
-        ).build()
+        )
+            // Explicit migration so existing users keep their favorites when
+            // we bump the schema to v2 (videoUrl column). Without this Room
+            // would crash on first launch after the update.
+            .addMigrations(SpaceExplorerDatabase.MIGRATION_1_2)
+            .build()
 
     @Provides
     @Singleton

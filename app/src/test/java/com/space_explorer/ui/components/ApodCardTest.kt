@@ -29,6 +29,7 @@ class ApodCardTest {
         explanation = "A sunrise on Mars.",
         imageUrl = "https://image",
         hdImageUrl = null,
+        videoUrl = null,
         mediaType = "image",
         copyright = null,
         isFavorite = false

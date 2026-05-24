@@ -37,13 +37,17 @@ class AstronomyMapperTest {
         assertThat(astronomy.isFavorite).isTrue()
     }
 
+    // Contract change: before the split, video items without thumbnail used to
+    // expose the embed URL in imageUrl (so Coil tried to render it). Now imageUrl
+    // is strictly a thumbnail or empty, and the embed URL lives in videoUrl.
     @Test
-    fun `fromApi falls back to url when video has no thumbnail`() {
+    fun `fromApi video without thumbnail keeps imageUrl empty and exposes embed via videoUrl`() {
         val response = videoResponse(thumbnailUrl = null, url = "https://video/y.mp4")
 
         val astronomy = AstronomyMapper.fromApi(response, isFavorite = false)
 
-        assertThat(astronomy.imageUrl).isEqualTo("https://video/y.mp4")
+        assertThat(astronomy.imageUrl).isEmpty()
+        assertThat(astronomy.videoUrl).isEqualTo("https://video/y.mp4")
     }
 
     @Test(expected = IllegalArgumentException::class)
@@ -82,6 +86,56 @@ class AstronomyMapperTest {
             isFavorite = false
         )
         assertThat(astronomy.imageUrl).isEmpty()
+    }
+
+    // Regression: videos used to overload imageUrl with the embed URL, which
+    // Coil cannot render. New shape: imageUrl = thumbnail, videoUrl = embed.
+    @Test
+    fun `fromApi video populates videoUrl with embed and imageUrl with thumbnail`() {
+        val response = ApodResponse(
+            date = "2026-05-22",
+            title = "Comet flyby",
+            explanation = "...",
+            url = "https://youtube.com/embed/abc",
+            hdUrl = null,
+            mediaType = "video",
+            copyright = null,
+            thumbnailUrl = "https://img.youtube.com/vi/abc/maxres.jpg"
+        )
+
+        val a = AstronomyMapper.fromApi(response, isFavorite = false)
+
+        assertThat(a.videoUrl).isEqualTo("https://youtube.com/embed/abc")
+        assertThat(a.imageUrl).isEqualTo("https://img.youtube.com/vi/abc/maxres.jpg")
+        assertThat(a.isVideo).isTrue()
+    }
+
+    // Regression: video without thumbnail used to fall back to embed as imageUrl,
+    // breaking Coil. New rule: imageUrl stays empty, videoUrl still works.
+    @Test
+    fun `fromApi video without thumbnail leaves imageUrl empty but keeps videoUrl`() {
+        val response = ApodResponse(
+            date = "2026-05-22",
+            title = "X",
+            explanation = "...",
+            url = "https://vimeo.com/embed/xyz",
+            hdUrl = null,
+            mediaType = "video",
+            copyright = null,
+            thumbnailUrl = null
+        )
+
+        val a = AstronomyMapper.fromApi(response, isFavorite = false)
+
+        assertThat(a.imageUrl).isEmpty()
+        assertThat(a.videoUrl).isEqualTo("https://vimeo.com/embed/xyz")
+    }
+
+    // Regression: ensures the new videoUrl column is null for image-type APODs.
+    @Test
+    fun `fromApi image leaves videoUrl null`() {
+        val a = AstronomyMapper.fromApi(imageResponse(), isFavorite = false)
+        assertThat(a.videoUrl).isNull()
     }
 
     @Test

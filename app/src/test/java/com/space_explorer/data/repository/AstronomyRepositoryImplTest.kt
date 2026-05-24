@@ -184,6 +184,7 @@ class AstronomyRepositoryImplTest {
             explanation = "Red planet",
             imageUrl = "https://image/x.jpg",
             hdImageUrl = null,
+            videoUrl = null,
             mediaType = "image",
             copyright = null
         )
@@ -241,6 +242,7 @@ class AstronomyRepositoryImplTest {
         explanation = "Red planet",
         imageUrl = "https://image/x.jpg",
         hdImageUrl = null,
+        videoUrl = null,
         mediaType = "image",
         copyright = null,
         isFavorite = false
