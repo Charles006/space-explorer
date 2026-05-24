@@ -18,20 +18,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-/**
- * Drives the Favorites screen.
- *
- * Differences from [AstronomyViewModel]:
- *   * No pagination — the entire favorites table is small and lives in memory.
- *   * No remote calls — read path is purely local (Room Flow).
- *   * Composed reactively via [combine] so a new favorite or a query change
- *     are both reflected in a single state emission.
- *
- * Loading semantics:
- *   * `isLoading = true` only on the very first emission, before Room has
- *     produced any value. As soon as the DB query completes (even with an
- *     empty list), `isLoading` flips to `false` and stays there.
- */
 @HiltViewModel
 class FavoritesViewModel @Inject constructor(
     private val repository: AstronomyRepository
@@ -50,10 +36,7 @@ class FavoritesViewModel @Inject constructor(
             searchQuery = query
         )
     }
-        .onStart {
-            // Surface a spinner until Room produces the first value.
-            emit(FavoritesUiState(isLoading = true))
-        }
+        .onStart { emit(FavoritesUiState(isLoading = true)) }
         .catch { throwable ->
             emit(
                 FavoritesUiState(

@@ -4,18 +4,10 @@ import com.google.common.truth.Truth.assertThat
 import com.space_explorer.data.model.ApodResponse
 import org.junit.Test
 
-/**
- * Validation of [AstronomyMapper]. These tests pin down the contract that
- * other layers rely on:
- *
- *  * Required fields are enforced (date, title, mediaType).
- *  * Video items use `thumbnail_url` when available, fall back to `url`.
- *  * Malformed URLs are rejected early instead of bubbling up to Coil.
- */
 class AstronomyMapperTest {
 
     @Test
-    fun `fromApi maps image response correctly`() {
+    fun fromApi_imageResponse_mapsAllFields() {
         val response = imageResponse()
 
         val astronomy = AstronomyMapper.fromApi(response, isFavorite = false)
@@ -27,7 +19,7 @@ class AstronomyMapperTest {
     }
 
     @Test
-    fun `fromApi uses thumbnailUrl for videos when present`() {
+    fun fromApi_videoWithThumbnail_usesThumbnailAsImage() {
         val response = videoResponse(thumbnailUrl = "https://thumb/x.jpg")
 
         val astronomy = AstronomyMapper.fromApi(response, isFavorite = true)
@@ -37,11 +29,8 @@ class AstronomyMapperTest {
         assertThat(astronomy.isFavorite).isTrue()
     }
 
-    // Contract change: before the split, video items without thumbnail used to
-    // expose the embed URL in imageUrl (so Coil tried to render it). Now imageUrl
-    // is strictly a thumbnail or empty, and the embed URL lives in videoUrl.
     @Test
-    fun `fromApi video without thumbnail keeps imageUrl empty and exposes embed via videoUrl`() {
+    fun fromApi_videoWithoutThumbnail_imageUrlEmptyVideoUrlSet() {
         val response = videoResponse(thumbnailUrl = null, url = "https://video/y.mp4")
 
         val astronomy = AstronomyMapper.fromApi(response, isFavorite = false)
@@ -51,25 +40,22 @@ class AstronomyMapperTest {
     }
 
     @Test(expected = IllegalArgumentException::class)
-    fun `fromApi rejects blank date`() {
+    fun fromApi_blankDate_throws() {
         AstronomyMapper.fromApi(imageResponse().copy(date = ""), isFavorite = false)
     }
 
     @Test(expected = IllegalArgumentException::class)
-    fun `fromApi rejects blank title`() {
+    fun fromApi_blankTitle_throws() {
         AstronomyMapper.fromApi(imageResponse().copy(title = ""), isFavorite = false)
     }
 
     @Test(expected = IllegalArgumentException::class)
-    fun `fromApi rejects unsupported media type`() {
+    fun fromApi_unsupportedMediaType_throws() {
         AstronomyMapper.fromApi(imageResponse().copy(mediaType = "audio"), isFavorite = false)
     }
 
-    // Regression: HomeScreen pagination was stuck at 10 items because NASA returned
-    // an item with empty 'url' and the mapper threw, killing the whole 10-item batch.
-    // See screenshot bug "Invalid media url returned by API: ''".
     @Test
-    fun `fromApi does not throw when url is empty`() {
+    fun fromApi_emptyUrl_imageUrlEmpty() {
         val astronomy = AstronomyMapper.fromApi(
             imageResponse().copy(url = ""),
             isFavorite = false
@@ -78,9 +64,8 @@ class AstronomyMapperTest {
         assertThat(astronomy.title).isEqualTo("Mars Sunrise")
     }
 
-    // Regression: same root cause as the empty-url case, with ftp/data/file schemes.
     @Test
-    fun `fromApi does not throw when url uses unsupported scheme`() {
+    fun fromApi_nonHttpUrl_imageUrlEmpty() {
         val astronomy = AstronomyMapper.fromApi(
             imageResponse().copy(url = "ftp://invalid"),
             isFavorite = false
@@ -88,10 +73,8 @@ class AstronomyMapperTest {
         assertThat(astronomy.imageUrl).isEmpty()
     }
 
-    // Regression: videos used to overload imageUrl with the embed URL, which
-    // Coil cannot render. New shape: imageUrl = thumbnail, videoUrl = embed.
     @Test
-    fun `fromApi video populates videoUrl with embed and imageUrl with thumbnail`() {
+    fun fromApi_videoYoutubeEmbed_populatesVideoUrlWithEmbedAndImageUrlWithThumbnail() {
         val response = ApodResponse(
             date = "2026-05-22",
             title = "Comet flyby",
@@ -110,10 +93,8 @@ class AstronomyMapperTest {
         assertThat(a.isVideo).isTrue()
     }
 
-    // Regression: video without thumbnail used to fall back to embed as imageUrl,
-    // breaking Coil. New rule: imageUrl stays empty, videoUrl still works.
     @Test
-    fun `fromApi video without thumbnail leaves imageUrl empty but keeps videoUrl`() {
+    fun fromApi_videoVimeoNoThumbnail_imageUrlEmptyVideoUrlSet() {
         val response = ApodResponse(
             date = "2026-05-22",
             title = "X",
@@ -131,15 +112,14 @@ class AstronomyMapperTest {
         assertThat(a.videoUrl).isEqualTo("https://vimeo.com/embed/xyz")
     }
 
-    // Regression: ensures the new videoUrl column is null for image-type APODs.
     @Test
-    fun `fromApi image leaves videoUrl null`() {
+    fun fromApi_image_videoUrlNull() {
         val a = AstronomyMapper.fromApi(imageResponse(), isFavorite = false)
         assertThat(a.videoUrl).isNull()
     }
 
     @Test
-    fun `toEntity and fromEntity round-trip preserve data`() {
+    fun roundTrip_toEntityAndBack_preservesFields() {
         val astronomy = AstronomyMapper.fromApi(imageResponse(), isFavorite = true)
         val entity = AstronomyMapper.toEntity(astronomy)
         val back = AstronomyMapper.fromEntity(entity)
@@ -149,8 +129,6 @@ class AstronomyMapperTest {
         assertThat(back.imageUrl).isEqualTo(astronomy.imageUrl)
         assertThat(back.isFavorite).isTrue()
     }
-
-    // region ── Helpers ───────────────────────────────────────────────────
 
     private fun imageResponse() = ApodResponse(
         date = "2026-05-22",
@@ -175,6 +153,4 @@ class AstronomyMapperTest {
         copyright = null,
         thumbnailUrl = thumbnailUrl
     )
-
-    // endregion
 }

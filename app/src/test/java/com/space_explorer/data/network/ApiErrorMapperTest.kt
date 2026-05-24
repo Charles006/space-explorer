@@ -10,48 +10,40 @@ import retrofit2.HttpException
 import retrofit2.Response
 import java.io.IOException
 
-/**
- * Tests that the data-layer error mapper translates every supported failure
- * mode into the right domain error subtype. This is the only place where
- * Retrofit/OkHttp types are allowed to leak — everything else in the
- * application consumes [AstronomyError].
- */
 class ApiErrorMapperTest {
 
     @Test
-    fun `IOException maps to Network`() {
+    fun ioException_mapsToNetwork() {
         val result = ApiErrorMapper.runCatching<String> { throw IOException("offline") }
-
-        assertThat(result.isFailure).isTrue()
         assertThat(result.exceptionOrNull()).isInstanceOf(AstronomyError.Network::class.java)
     }
 
     @Test
-    fun `401 maps to Unauthorized`() {
+    fun http401_mapsToUnauthorized() {
         val result = ApiErrorMapper.runCatching<String> { throw httpException(401) }
         assertThat(result.exceptionOrNull()).isInstanceOf(AstronomyError.Unauthorized::class.java)
     }
 
     @Test
-    fun `403 also maps to Unauthorized`() {
+    fun http403_mapsToUnauthorized() {
         val result = ApiErrorMapper.runCatching<String> { throw httpException(403) }
         assertThat(result.exceptionOrNull()).isInstanceOf(AstronomyError.Unauthorized::class.java)
     }
 
     @Test
-    fun `429 maps to RateLimited`() {
+    fun http429_mapsToRateLimited() {
         val result = ApiErrorMapper.runCatching<String> { throw httpException(429) }
         assertThat(result.exceptionOrNull()).isInstanceOf(AstronomyError.RateLimited::class.java)
     }
 
     @Test
-    fun `500 maps to ServerUnavailable`() {
+    fun http500_mapsToServerUnavailable() {
         val result = ApiErrorMapper.runCatching<String> { throw httpException(500) }
         assertThat(result.exceptionOrNull()).isInstanceOf(AstronomyError.ServerUnavailable::class.java)
     }
 
     @Test
-    fun `418 falls through to HttpError carrying code`() {
+    fun http418_mapsToGenericHttpError() {
         val result = ApiErrorMapper.runCatching<String> { throw httpException(418) }
         val err = result.exceptionOrNull()
         assertThat(err).isInstanceOf(AstronomyError.HttpError::class.java)
@@ -59,20 +51,19 @@ class ApiErrorMapperTest {
     }
 
     @Test
-    fun `arbitrary exception maps to Unknown`() {
+    fun otherException_mapsToUnknown() {
         val result = ApiErrorMapper.runCatching<String> { throw IllegalStateException("weird") }
         assertThat(result.exceptionOrNull()).isInstanceOf(AstronomyError.Unknown::class.java)
     }
 
     @Test(expected = CancellationException::class)
-    fun `CancellationException is propagated, not swallowed`() {
+    fun cancellation_propagates() {
         ApiErrorMapper.runCatching<String> { throw CancellationException("cancelled") }
     }
 
     @Test
-    fun `successful block returns Result success`() {
+    fun successPath_returnsResultSuccess() {
         val result = ApiErrorMapper.runCatching { 42 }
-        assertThat(result.isSuccess).isTrue()
         assertThat(result.getOrThrow()).isEqualTo(42)
     }
 

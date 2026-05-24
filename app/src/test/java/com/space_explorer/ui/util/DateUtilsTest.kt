@@ -9,7 +9,6 @@ class DateUtilsTest {
 
     @Before
     fun setUp() {
-        // Pin "today" so date arithmetic tests are deterministic.
         DateUtils.setFixedClock("2026-05-22")
     }
 
@@ -19,13 +18,13 @@ class DateUtilsTest {
     }
 
     @Test
-    fun `isValidIsoDate accepts proper format`() {
+    fun isValidIsoDate_validInput_returnsTrue() {
         assertThat(DateUtils.isValidIsoDate("2026-05-22")).isTrue()
         assertThat(DateUtils.isValidIsoDate("2000-01-01")).isTrue()
     }
 
     @Test
-    fun `isValidIsoDate rejects malformed strings`() {
+    fun isValidIsoDate_malformed_returnsFalse() {
         assertThat(DateUtils.isValidIsoDate("22-05-2026")).isFalse()
         assertThat(DateUtils.isValidIsoDate("not-a-date")).isFalse()
         assertThat(DateUtils.isValidIsoDate("")).isFalse()
@@ -34,47 +33,44 @@ class DateUtilsTest {
     }
 
     @Test
-    fun `isValidIsoDate rejects impossible calendar dates`() {
-        // java.time refuses to roll over invalid days; SimpleDateFormat would accept these.
+    fun isValidIsoDate_impossibleCalendarDates_returnsFalse() {
         assertThat(DateUtils.isValidIsoDate("2026-02-30")).isFalse()
         assertThat(DateUtils.isValidIsoDate("2026-13-01")).isFalse()
     }
 
     @Test
-    fun `prettyPrint formats iso date in spanish locale`() {
+    fun prettyPrint_validIso_formatsInSpanish() {
         val pretty = DateUtils.prettyPrint("2026-05-22")
         assertThat(pretty).contains("2026")
         assertThat(pretty).contains("22")
-        // "mayo" in Spanish month name
         assertThat(pretty.lowercase()).contains("mayo")
     }
 
     @Test
-    fun `prettyPrint returns original on parse failure`() {
-        val invalid = "not-a-date"
-        assertThat(DateUtils.prettyPrint(invalid)).isEqualTo(invalid)
+    fun prettyPrint_invalidInput_returnsOriginal() {
+        assertThat(DateUtils.prettyPrint("not-a-date")).isEqualTo("not-a-date")
     }
 
     @Test
-    fun `today returns fixed date when clock is pinned`() {
+    fun today_returnsFixedClockValue() {
         assertThat(DateUtils.today()).isEqualTo("2026-05-22")
     }
 
     @Test
-    fun `daysAgo subtracts days from today`() {
+    fun daysAgo_subtractsCorrectly() {
         assertThat(DateUtils.daysAgo(0)).isEqualTo("2026-05-22")
         assertThat(DateUtils.daysAgo(1)).isEqualTo("2026-05-21")
         assertThat(DateUtils.daysAgo(22)).isEqualTo("2026-04-30")
     }
 
     @Test
-    fun `subtractDays handles month boundaries`() {
+    fun subtractDays_acrossMonthBoundary() {
         assertThat(DateUtils.subtractDays("2026-05-01", 1)).isEqualTo("2026-04-30")
         assertThat(DateUtils.subtractDays("2026-03-01", 1)).isEqualTo("2026-02-28")
     }
 
     @Test
-    fun `previousDay returns day before given date`() {
+    fun previousDay_returnsDayBefore() {
         assertThat(DateUtils.previousDay("2026-05-22")).isEqualTo("2026-05-21")
     }
 }

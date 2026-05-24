@@ -20,11 +20,8 @@ class EmbeddedVideoPlayerTest {
     @get:Rule
     val composeRule = createComposeRule()
 
-    // Regression: video detail used to show a grey indefinite spinner because
-    // Coil cannot render embed URLs. Player MUST start with a tappable play
-    // button instead.
     @Test
-    fun `initial state shows play button`() {
+    fun initialState_showsPlayButton() {
         composeRule.setContent {
             EmbeddedVideoPlayer(
                 embedUrl = "https://youtube.com/embed/abc",
@@ -35,10 +32,8 @@ class EmbeddedVideoPlayerTest {
         composeRule.onNodeWithTag("embedded_video_play_button").assertIsDisplayed()
     }
 
-    // Regression: tapping play used to open an external browser (Intent). It
-    // must now swap into an in-process WebView.
     @Test
-    fun `tapping play swaps to webview`() {
+    fun tappingPlay_swapsToWebView() {
         composeRule.setContent {
             EmbeddedVideoPlayer(
                 embedUrl = "https://youtube.com/embed/abc",
@@ -50,11 +45,8 @@ class EmbeddedVideoPlayerTest {
         composeRule.onNodeWithTag("embedded_video_webview").assertIsDisplayed()
     }
 
-    // Regression: the play state must survive recomposition (e.g. parent
-    // recomposes because of unrelated state change) so playback does not
-    // reset back to the thumbnail.
     @Test
-    fun `play state survives recomposition`() {
+    fun playState_survivesRecomposition() {
         var contentDesc by mutableStateOf("Initial")
         composeRule.setContent {
             EmbeddedVideoPlayer(

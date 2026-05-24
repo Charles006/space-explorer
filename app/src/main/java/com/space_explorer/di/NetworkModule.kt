@@ -18,18 +18,6 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Named
 import javax.inject.Singleton
 
-/**
- * Hilt module that builds the HTTP + JSON stack used to talk to NASA.
- *
- * Design choices:
- *   * Timeouts are pulled from [Constants] so they are visible and tunable
- *     without modifying DI code.
- *   * The logging interceptor's level depends on [BuildConfig.DEBUG]; we use
- *     `BASIC` (request-line + status) rather than `BODY` to avoid leaking
- *     potentially large image payload metadata into logcat.
- *   * `ApiKeyInterceptor` is in front of the logging interceptor so the key
- *     appears in debug logs — handy for diagnosing 401s.
- */
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {

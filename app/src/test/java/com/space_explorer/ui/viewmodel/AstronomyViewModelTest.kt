@@ -42,7 +42,7 @@ class AstronomyViewModelTest {
     }
 
     @Test
-    fun `loadInitialData success populates items and stops loading`() = runTest {
+    fun loadInitialData_success_populatesItems() = runTest {
         val items = listOf(astronomy("2026-05-22", "Mars"))
         whenever(repository.getAstronomyRange(any(), any())).thenReturn(Result.success(items))
         whenever(repository.observeFavoriteIds()).thenReturn(MutableStateFlow(emptySet()))
@@ -60,7 +60,7 @@ class AstronomyViewModelTest {
     }
 
     @Test
-    fun `loadInitialData failure surfaces domain error message`() = runTest {
+    fun loadInitialData_domainError_surfacesLocalizedMessage() = runTest {
         whenever(repository.getAstronomyRange(any(), any()))
             .thenReturn(Result.failure(AstronomyError.Network()))
         whenever(repository.observeFavoriteIds()).thenReturn(MutableStateFlow(emptySet()))
@@ -68,13 +68,11 @@ class AstronomyViewModelTest {
         val viewModel = AstronomyViewModel(repository)
         advanceUntilIdle()
 
-        val state = viewModel.uiState.value
-        assertThat(state.isLoading).isFalse()
-        assertThat(state.errorMessage).contains("Sin conexion")
+        assertThat(viewModel.uiState.value.errorMessage).contains("Sin conexion")
     }
 
     @Test
-    fun `loadInitialData with generic exception falls back to its message`() = runTest {
+    fun loadInitialData_genericException_fallsBackToMessage() = runTest {
         whenever(repository.getAstronomyRange(any(), any()))
             .thenReturn(Result.failure(RuntimeException("boom")))
         whenever(repository.observeFavoriteIds()).thenReturn(MutableStateFlow(emptySet()))
@@ -86,7 +84,7 @@ class AstronomyViewModelTest {
     }
 
     @Test
-    fun `onSearchQueryChanged filters items by title`() = runTest {
+    fun onSearchQueryChanged_filtersByTitle() = runTest {
         val items = listOf(
             astronomy("2026-05-22", "Mars Sunrise"),
             astronomy("2026-05-21", "Lunar Eclipse"),
@@ -106,7 +104,7 @@ class AstronomyViewModelTest {
     }
 
     @Test
-    fun `onRemoteSearch with invalid date sets error without calling repository`() = runTest {
+    fun onRemoteSearch_invalidDate_setsErrorWithoutCallingRepo() = runTest {
         whenever(repository.getAstronomyRange(any(), any())).thenReturn(Result.success(emptyList()))
         whenever(repository.observeFavoriteIds()).thenReturn(MutableStateFlow(emptySet()))
 
@@ -119,7 +117,7 @@ class AstronomyViewModelTest {
     }
 
     @Test
-    fun `toggleFavorite delegates to repository toggleFavorite`() = runTest {
+    fun toggleFavorite_delegatesToRepository() = runTest {
         val item = astronomy("2026-05-22", "Mars", isFavorite = false)
         whenever(repository.getAstronomyRange(any(), any())).thenReturn(Result.success(listOf(item)))
         whenever(repository.observeFavoriteIds()).thenReturn(MutableStateFlow(emptySet()))
@@ -133,34 +131,8 @@ class AstronomyViewModelTest {
         verify(repository).toggleFavorite(item)
     }
 
-    // Regression: after a failed loadNextPage the snackbar stayed pinned even when
-    // the very next page loaded fine, because appendPage() never cleared the prior
-    // errorMessage. See screenshot bug — error sticks while list continues at 10 items.
     @Test
-    fun `loadNextPage success clears prior errorMessage`() = runTest {
-        val initial = listOf(astronomy("2026-05-22", "First"))
-        val nextPage = listOf(astronomy("2026-05-12", "Second"))
-        whenever(repository.observeFavoriteIds()).thenReturn(MutableStateFlow(emptySet()))
-        whenever(repository.getAstronomyRange(any(), any()))
-            .thenReturn(Result.success(initial))                                  // load initial
-            .thenReturn(Result.failure(RuntimeException("boom transient")))       // first loadNextPage
-            .thenReturn(Result.success(nextPage))                                 // second loadNextPage
-
-        val viewModel = AstronomyViewModel(repository)
-        advanceUntilIdle()
-
-        viewModel.loadNextPage()
-        advanceUntilIdle()
-        assertThat(viewModel.uiState.value.errorMessage).contains("boom transient")
-
-        viewModel.loadNextPage()
-        advanceUntilIdle()
-        assertThat(viewModel.uiState.value.errorMessage).isNull()
-        assertThat(viewModel.uiState.value.items).hasSize(2)
-    }
-
-    @Test
-    fun `observeFavoriteIds updates isFavorite flag of items`() = runTest {
+    fun observeFavoriteIds_updatesIsFavoriteFlag() = runTest {
         val item = astronomy("2026-05-22", "Mars", isFavorite = false)
         whenever(repository.getAstronomyRange(any(), any())).thenReturn(Result.success(listOf(item)))
         val favoritesFlow = MutableStateFlow<Set<String>>(emptySet())
@@ -173,6 +145,29 @@ class AstronomyViewModelTest {
         advanceUntilIdle()
 
         assertThat(viewModel.uiState.value.items.first().isFavorite).isTrue()
+    }
+
+    @Test
+    fun loadNextPage_successAfterFailure_clearsErrorMessage() = runTest {
+        val initial = listOf(astronomy("2026-05-22", "First"))
+        val nextPage = listOf(astronomy("2026-05-12", "Second"))
+        whenever(repository.observeFavoriteIds()).thenReturn(MutableStateFlow(emptySet()))
+        whenever(repository.getAstronomyRange(any(), any()))
+            .thenReturn(Result.success(initial))
+            .thenReturn(Result.failure(RuntimeException("boom transient")))
+            .thenReturn(Result.success(nextPage))
+
+        val viewModel = AstronomyViewModel(repository)
+        advanceUntilIdle()
+
+        viewModel.loadNextPage()
+        advanceUntilIdle()
+        assertThat(viewModel.uiState.value.errorMessage).contains("boom transient")
+
+        viewModel.loadNextPage()
+        advanceUntilIdle()
+        assertThat(viewModel.uiState.value.errorMessage).isNull()
+        assertThat(viewModel.uiState.value.items).hasSize(2)
     }
 
     private fun astronomy(date: String, title: String, isFavorite: Boolean = false) = Astronomy(

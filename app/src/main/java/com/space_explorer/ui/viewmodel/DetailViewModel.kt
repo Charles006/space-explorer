@@ -17,21 +17,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-/**
- * Drives the Detail screen.
- *
- * Inputs:
- *   * `astronomyId` (from [SavedStateHandle]) — typed as ISO date so it
- *     doubles as the API key.
- *
- * Behaviour:
- *   * Fetches the APOD detail once on init and on [retry].
- *   * Observes the favorites stream so the star toggle stays accurate even
- *     when the user backs out, edits favorites elsewhere, and returns.
- *   * Reports toggle failures to the user via [DetailUiState.errorMessage]
- *     instead of swallowing them — this was a real bug where a rapid double
- *     tap would silently fail and the UI would diverge from the DB state.
- */
 @HiltViewModel
 class DetailViewModel @Inject constructor(
     private val repository: AstronomyRepository,
@@ -51,10 +36,8 @@ class DetailViewModel @Inject constructor(
         loadDetail()
     }
 
-    /** Re-fetch the detail. Invoked from the error retry button. */
     fun retry() = loadDetail()
 
-    /** Toggle favorite state. Errors are surfaced via [DetailUiState.errorMessage]. */
     fun toggleFavorite() {
         val current = _uiState.value.astronomy ?: run {
             _uiState.update { it.copy(errorMessage = "No hay contenido cargado para marcar.") }
@@ -68,12 +51,9 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    /** Dismiss any user-visible error so the snackbar can be re-shown later. */
     fun dismissError() {
         _uiState.update { it.copy(errorMessage = null) }
     }
-
-    // region ── Internal ──────────────────────────────────────────────────
 
     private fun observeFavoriteState() {
         repository.observeFavoriteIds()
@@ -105,6 +85,4 @@ class DetailViewModel @Inject constructor(
         is AstronomyError -> userMessage
         else -> message ?: "Error desconocido"
     }
-
-    // endregion
 }

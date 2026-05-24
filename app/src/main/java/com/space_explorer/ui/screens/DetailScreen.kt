@@ -1,6 +1,7 @@
 package com.space_explorer.ui.screens
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -18,9 +20,7 @@ import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.BrokenImage
 import androidx.compose.material.icons.outlined.StarBorder
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
-import com.space_explorer.core.Constants
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -47,6 +47,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
+import com.space_explorer.core.Constants
 import com.space_explorer.domain.model.Astronomy
 import com.space_explorer.ui.components.EmbeddedVideoPlayer
 import com.space_explorer.ui.components.ErrorState
@@ -55,18 +56,6 @@ import com.space_explorer.ui.components.ThemeToggleButton
 import com.space_explorer.ui.util.DateUtils
 import com.space_explorer.ui.viewmodel.DetailViewModel
 
-/**
- * Detail screen for a single APOD.
- *
- * Reads [DetailViewModel.uiState] and renders the three possible UI shapes:
- *   * loading (full-screen spinner)
- *   * error   (centered card + retry)
- *   * content (scrollable image + metadata)
- *
- * Toggle-favorite errors are surfaced through a [SnackbarHost] rather than
- * blocking the whole screen, since the content remains usable even if the
- * write fails.
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailScreen(
@@ -80,7 +69,6 @@ fun DetailScreen(
     val astronomy = uiState.astronomy
     val snackbarHostState = remember { SnackbarHostState() }
 
-    // Display toggle-favorite errors as snackbars. Content is still visible.
     LaunchedEffect(uiState.errorMessage, astronomy) {
         val message = uiState.errorMessage
         if (message != null && astronomy != null) {
@@ -119,8 +107,6 @@ fun DetailScreen(
         }
     }
 }
-
-// region ── Internals ──────────────────────────────────────────────────────
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -167,7 +153,7 @@ private fun DetailTopBar(
 @Composable
 private fun DetailContent(
     astronomy: Astronomy,
-    scrollState: androidx.compose.foundation.ScrollState,
+    scrollState: ScrollState,
     modifier: Modifier
 ) {
     Column(
@@ -191,8 +177,6 @@ private fun DetailCoverImage(astronomy: Astronomy) {
             .padding(16.dp)
             .clip(RoundedCornerShape(24.dp))
     ) {
-        // Video-type APODs: render the in-app embedded player. Bail out early
-        // so we never fall through to Coil with an embed URL it cannot render.
         if (astronomy.isVideo && !astronomy.videoUrl.isNullOrBlank()) {
             EmbeddedVideoPlayer(
                 embedUrl = astronomy.videoUrl,
@@ -216,8 +200,6 @@ private fun DetailCoverImage(astronomy: Astronomy) {
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop,
                 loading = { DetailCoverPlaceholder() },
-                // Regression: the missing `error =` callback used to leave the
-                // screen stuck on the grey placeholder when Coil failed.
                 error = { DetailCoverError() }
             )
         }
@@ -280,5 +262,3 @@ private fun DetailMetadata(astronomy: Astronomy) {
         Spacer(Modifier.height(24.dp))
     }
 }
-
-// endregion

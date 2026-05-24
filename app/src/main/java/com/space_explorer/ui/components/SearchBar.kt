@@ -34,17 +34,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import com.space_explorer.ui.util.DateUtils
 
-/**
- * Combined search field + remote-search trigger.
- *
- * Behavior:
- *   * Free-text edits propagate via [onQueryChange] and feed the local filter.
- *   * When the query is a valid ISO date, an [AssistChip] expands offering an
- *     explicit "buscar en NASA" action; pressing the IME search key triggers
- *     the same action automatically.
- *   * Date validation is delegated to [DateUtils.isValidIsoDate] — no regex
- *     duplicated here.
- */
 @Composable
 fun AstronomySearchBar(
     query: String,
@@ -111,8 +100,6 @@ fun AstronomySearchBar(
     }
 }
 
-// region ── Previews ───────────────────────────────────────────────────────
-
 private class SearchBarPreviewProvider : PreviewParameterProvider<String> {
     override val values = sequenceOf("", "Mars", "2024-01-15")
 }
@@ -122,11 +109,5 @@ private class SearchBarPreviewProvider : PreviewParameterProvider<String> {
 private fun AstronomySearchBarPreview(
     @PreviewParameter(SearchBarPreviewProvider::class) query: String
 ) {
-    AstronomySearchBar(
-        query = query,
-        onQueryChange = {},
-        onRemoteSearch = {}
-    )
+    AstronomySearchBar(query = query, onQueryChange = {}, onRemoteSearch = {})
 }
-
-// endregion

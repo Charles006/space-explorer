@@ -28,24 +28,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import coil.compose.SubcomposeAsyncImage
 
-/**
- * Plays a NASA APOD video (YouTube / Vimeo embed) inside the app without
- * launching an external browser.
- *
- * UX flow:
- *   1. Show the thumbnail (if any) with a centered play button.
- *   2. On tap, swap to an in-process [WebView] loading the embed URL wrapped
- *      in [buildEmbedHtml] (autoplay + playsinline).
- *
- * The WebView is destroyed on leaving the composition to prevent background
- * playback and the classic WebView-leaks-the-Activity problem.
- *
- * Why WebView instead of ExoPlayer / Media3: NASA APOD videos are YouTube or
- * Vimeo embeds. Both providers' ToS forbid extracting the underlying stream,
- * so the official path is to render the provider's player — which is what an
- * iframe-in-WebView does. For the rare direct MP4, WebView also plays it via
- * HTML5 `<video>`, so coverage is universal with zero new dependencies.
- */
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
 fun EmbeddedVideoPlayer(
@@ -54,9 +36,6 @@ fun EmbeddedVideoPlayer(
     contentDescription: String,
     modifier: Modifier = Modifier
 ) {
-    // rememberSaveable keyed on embedUrl so navigating between different
-    // videos resets the play state, but recomposition for unrelated reasons
-    // (e.g. parent updates) preserves it.
     var isPlaying by rememberSaveable(embedUrl) { mutableStateOf(false) }
     val webViewHolder = remember { mutableStateOf<WebView?>(null) }
 
@@ -91,8 +70,6 @@ fun EmbeddedVideoPlayer(
         }
     }
 }
-
-// region ── Internals ──────────────────────────────────────────────────────
 
 @Composable
 private fun ThumbnailWithPlayButton(
@@ -147,11 +124,7 @@ private fun EmbeddedWebView(
                     loadWithOverviewMode = true
                     useWideViewPort = true
                 }
-                // Needed for fullscreen and certain provider scripts.
                 webChromeClient = WebChromeClient()
-                // baseUrl must match the iframe origin so YouTube does not
-                // reject playback as a "third party" embed (also part of
-                // the error 152 cure).
                 loadDataWithBaseURL(
                     "https://www.youtube-nocookie.com",
                     buildEmbedHtml(embedUrl),
@@ -165,18 +138,6 @@ private fun EmbeddedWebView(
     )
 }
 
-// endregion
-
-/**
- * Wraps an embed [url] in a minimal HTML page with `autoplay=1` and
- * `playsinline=1` query parameters appended (without overriding existing
- * values). `internal` so it stays unit-testable from the same package.
- *
- * The URL is first passed through [normalizeToEmbedUrl] because NASA APOD
- * sometimes returns watch URLs (`youtube.com/watch?v=…`) or short-form
- * links (`youtu.be/…`) that an `<iframe>` cannot load — feeding those
- * directly produced YouTube "error 152" on real devices.
- */
 internal fun buildEmbedHtml(url: String): String {
     val embedUrl = normalizeToEmbedUrl(url)
     val withAutoplay = appendQueryParamIfMissing(embedUrl, "autoplay", "1")
@@ -199,30 +160,12 @@ internal fun buildEmbedHtml(url: String): String {
     """.trimIndent()
 }
 
-/**
- * Normalizes any URL NASA might hand us for a video into a domain + path
- * that an `<iframe>` can actually load. The output uses `youtube-nocookie.com`
- * (YouTube's "privacy enhanced" mode) which has fewer embedding restrictions
- * than `youtube.com` — this is the fix for YouTube error 152.
- *
- * Supported inputs:
- *   * `https://www.youtube.com/watch?v=ID[&extra=…]` → nocookie/embed/ID
- *   * `https://youtu.be/ID[?t=30]`                    → nocookie/embed/ID
- *   * `https://www.youtube.com/embed/ID[?…]`          → nocookie/embed/ID
- *   * `https://www.youtube-nocookie.com/embed/ID`     → passes through
- *   * `https://vimeo.com/123456`                       → player.vimeo.com/video/123456
- *   * Anything else (MP4, unknown providers)           → passes through unchanged
- */
 internal fun normalizeToEmbedUrl(url: String): String {
-    // /embed/<id> URLs already have an iframe-safe shape — only upgrade the
-    // domain and preserve any existing query string (e.g. ?rel=0).
     YOUTUBE_EMBED_REGEX.find(url)?.let { match ->
         val id = match.groupValues[1]
         val preservedQuery = match.groupValues[2]
         return YOUTUBE_NOCOOKIE_EMBED.format(id) + preservedQuery
     }
-    // watch?v=<id> params are user-state (t=, list=…) that do not apply to
-    // an iframe; drop them and keep just the video id.
     YOUTUBE_WATCH_REGEX.find(url)?.let { match ->
         return YOUTUBE_NOCOOKIE_EMBED.format(match.groupValues[1])
     }
@@ -247,7 +190,6 @@ private val VIMEO_REGEX =
 private const val YOUTUBE_NOCOOKIE_EMBED = "https://www.youtube-nocookie.com/embed/%s"
 private const val VIMEO_EMBED = "https://player.vimeo.com/video/%s"
 
-/** Adds `key=value` to [url]'s query string only if `key=` is not already present. */
 private fun appendQueryParamIfMissing(url: String, key: String, value: String): String {
     if (url.contains("$key=")) return url
     val separator = if (url.contains('?')) '&' else '?'

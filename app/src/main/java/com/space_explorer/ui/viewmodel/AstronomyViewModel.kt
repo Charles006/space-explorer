@@ -18,19 +18,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-/**
- * Drives the Home (timeline) screen.
- *
- * Owns:
- *   * The paginated timeline of APODs, fetched backwards in [Constants.PAGE_SIZE]-day chunks.
- *   * Local in-memory filtering by query (title / explanation / date).
- *   * Remote date lookup (`yyyy-MM-dd` → single APOD).
- *   * Reactive favorite-flag updates so star icons stay in sync with the DB.
- *
- * Threading: all I/O happens inside [viewModelScope] via suspend functions;
- * the StateFlow is updated on the main dispatcher implicitly through
- * `MutableStateFlow.update`.
- */
 @HiltViewModel
 class AstronomyViewModel @Inject constructor(
     private val repository: AstronomyRepository
@@ -39,15 +26,12 @@ class AstronomyViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
-    /** Oldest date currently loaded; serves as the upper bound for the next page. */
     private var oldestLoadedDate: String = DateUtils.today()
 
     init {
         observeFavorites()
         loadInitialData()
     }
-
-    // region ── Public API ────────────────────────────────────────────────
 
     fun loadInitialData() {
         viewModelScope.launch {
@@ -73,10 +57,7 @@ class AstronomyViewModel @Inject constructor(
                 .onSuccess { newItems -> appendPage(newItems, fallbackStart = start) }
                 .onFailure { throwable ->
                     _uiState.update {
-                        it.copy(
-                            isLoadingMore = false,
-                            errorMessage = throwable.userMessage()
-                        )
+                        it.copy(isLoadingMore = false, errorMessage = throwable.userMessage())
                     }
                 }
         }
@@ -153,11 +134,6 @@ class AstronomyViewModel @Inject constructor(
         _uiState.update { it.copy(errorMessage = null) }
     }
 
-    // endregion
-
-    // region ── Internal ──────────────────────────────────────────────────
-
-    /** Observes the favorites table and reflects changes on the in-memory list. */
     private fun observeFavorites() {
         repository.observeFavoriteIds()
             .onEach { favoriteIds ->
@@ -223,14 +199,8 @@ class AstronomyViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Domain errors expose a localized [AstronomyError.userMessage]; any other
-     * Throwable falls back to its own message.
-     */
     private fun Throwable.userMessage(): String = when (this) {
         is AstronomyError -> userMessage
         else -> message ?: "Error desconocido"
     }
-
-    // endregion
 }

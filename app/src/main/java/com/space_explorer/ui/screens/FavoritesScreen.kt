@@ -40,13 +40,6 @@ import com.space_explorer.ui.components.LoadingState
 import com.space_explorer.ui.components.ThemeToggleButton
 import com.space_explorer.ui.viewmodel.FavoritesViewModel
 
-/**
- * Favorites tab.
- *
- * Pure presentation layer — all data and filtering logic lives in
- * [FavoritesViewModel]. The screen only owns the in-memory query string
- * (kept in `rememberSaveable` so it survives rotation and process death).
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritesScreen(
@@ -114,10 +107,7 @@ private fun FavoritesList(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         item {
-            FavoritesFilterField(
-                query = searchQuery,
-                onQueryChange = onSearchQueryChange
-            )
+            FavoritesFilterField(query = searchQuery, onQueryChange = onSearchQueryChange)
         }
 
         if (isEmpty) {
@@ -136,10 +126,7 @@ private fun FavoritesList(
 }
 
 @Composable
-private fun FavoritesFilterField(
-    query: String,
-    onQueryChange: (String) -> Unit
-) {
+private fun FavoritesFilterField(query: String, onQueryChange: (String) -> Unit) {
     OutlinedTextField(
         value = query,
         onValueChange = onQueryChange,

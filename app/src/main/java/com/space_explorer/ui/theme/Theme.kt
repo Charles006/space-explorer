@@ -10,30 +10,18 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
-/**
- * Brand-locked dark color scheme used when the OS does not provide Material
- * You (Android < 12) or the user has explicitly disabled dynamic color.
- */
 private val DarkColorScheme = darkColorScheme(
     primary = CosmicIndigo80,
     secondary = NebulaMagenta80,
     tertiary = PlasmaCyan80
 )
 
-/** Brand-locked light color scheme. See [DarkColorScheme]. */
 private val LightColorScheme = lightColorScheme(
     primary = CosmicIndigo40,
     secondary = NebulaMagenta40,
     tertiary = PlasmaCyan40
 )
 
-/**
- * Material 3 theme wrapper for the whole app.
- *
- * @param darkTheme    `true` to render the dark scheme.
- * @param dynamicColor `true` to honour the user's Material You wallpaper-derived palette
- *                     when running on Android 12 (API 31) or higher.
- */
 @Composable
 fun SpaceExplorerTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -49,9 +37,5 @@ fun SpaceExplorerTheme(
         else -> LightColorScheme
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
-    )
+    MaterialTheme(colorScheme = colorScheme, typography = Typography, content = content)
 }

@@ -6,11 +6,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
-/**
- * Project typography. Only [bodyLarge] is overridden — every other style
- * falls back to the Material 3 defaults, which already give us a consistent
- * type ramp from `displayLarge` down to `labelSmall`.
- */
 val Typography = Typography(
     bodyLarge = TextStyle(
         fontFamily = FontFamily.Default,

@@ -30,17 +30,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 
-/**
- * Reusable full-screen state placeholders used by every list screen.
- *
- * All three composables share the same layout grammar (centered icon + title
- * + description + optional action) to keep the visual language consistent.
- *
- * Previews are parameterized through [StatePreviewProvider] so we get four
- * variants from a single `@Preview` function (the old code had four near-
- * identical preview wrappers).
- */
-
 @Composable
 fun LoadingState(modifier: Modifier = Modifier) {
     Column(
@@ -137,7 +126,6 @@ fun EmptyState(
     }
 }
 
-/** Convenience wrapper used by the Favorites screen so copy is centralized. */
 @Composable
 fun EmptyFavorites(modifier: Modifier = Modifier) {
     EmptyState(
@@ -148,7 +136,6 @@ fun EmptyFavorites(modifier: Modifier = Modifier) {
     )
 }
 
-/** Small spinner used as a list footer while paginating. */
 @Composable
 fun InlineLoadingFooter(modifier: Modifier = Modifier) {
     Column(
@@ -161,9 +148,6 @@ fun InlineLoadingFooter(modifier: Modifier = Modifier) {
     }
 }
 
-// region ── Previews ───────────────────────────────────────────────────────
-
-/** Discriminator used by [StatePreviewProvider] to render all variants once. */
 private enum class PreviewState { LOADING, ERROR, EMPTY, EMPTY_FAVORITES, INLINE_LOADING }
 
 private class StatePreviewProvider : PreviewParameterProvider<PreviewState> {
@@ -177,17 +161,9 @@ private fun StatePreview(
 ) {
     when (state) {
         PreviewState.LOADING -> LoadingState()
-        PreviewState.ERROR -> ErrorState(
-            message = "No se pudo conectar con el servidor",
-            onRetry = {}
-        )
-        PreviewState.EMPTY -> EmptyState(
-            title = "Sin resultados",
-            description = "Intenta con otra busqueda"
-        )
+        PreviewState.ERROR -> ErrorState(message = "No se pudo conectar con el servidor", onRetry = {})
+        PreviewState.EMPTY -> EmptyState(title = "Sin resultados", description = "Intenta con otra busqueda")
         PreviewState.EMPTY_FAVORITES -> EmptyFavorites()
         PreviewState.INLINE_LOADING -> InlineLoadingFooter()
     }
 }
-
-// endregion

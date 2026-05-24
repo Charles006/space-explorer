@@ -57,18 +57,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
-/**
- * Home / timeline screen.
- *
- * Composition responsibilities:
- *   * Render the [HomeUiState] coming from [AstronomyViewModel].
- *   * Wire pagination: emits [AstronomyViewModel.loadNextPage] when the user
- *     scrolls within [Constants.PAGINATION_PREFETCH_DISTANCE] of the end.
- *   * Surface transient errors via [SnackbarHost] without blocking the list.
- *
- * The screen contains zero business logic. Effects that translate UI signals
- * into ViewModel calls are extracted into private `@Composable` helpers below.
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -84,10 +72,8 @@ fun HomeScreen(
 
     var searchQuery by rememberSaveable { mutableStateOf("") }
 
-    // Propagate search edits to the VM.
     LaunchedEffect(searchQuery) { viewModel.onSearchQueryChanged(searchQuery) }
 
-    // Pagination & snackbar effects.
     PaginationEffect(
         listState = listState,
         endReached = uiState.endReached,
@@ -119,11 +105,7 @@ fun HomeScreen(
             )
         },
         floatingActionButton = {
-            AnimatedVisibility(
-                visible = showScrollToTop,
-                enter = fadeIn(),
-                exit = fadeOut()
-            ) {
+            AnimatedVisibility(visible = showScrollToTop, enter = fadeIn(), exit = fadeOut()) {
                 FloatingActionButton(onClick = {
                     coroutineScope.launch { listState.animateScrollToItem(0) }
                 }) {
@@ -147,8 +129,6 @@ fun HomeScreen(
     }
 }
 
-// region ── Private helpers ────────────────────────────────────────────────
-
 @Composable
 private fun HomeBody(
     modifier: Modifier,
@@ -166,11 +146,7 @@ private fun HomeBody(
             LoadingState(modifier = modifier)
 
         uiState.errorMessage != null && uiState.items.isEmpty() ->
-            ErrorState(
-                message = uiState.errorMessage,
-                onRetry = onRetry,
-                modifier = modifier
-            )
+            ErrorState(message = uiState.errorMessage, onRetry = onRetry, modifier = modifier)
 
         else -> HomeList(
             modifier = modifier,
@@ -238,12 +214,6 @@ private fun HomeList(
     }
 }
 
-/**
- * Observes scroll position and fires [onLoadMore] when within
- * [Constants.PAGINATION_PREFETCH_DISTANCE] items from the end. The flow is
- * de-duplicated so [onLoadMore] is not invoked multiple times for the same
- * threshold crossing.
- */
 @Composable
 private fun PaginationEffect(
     listState: LazyListState,
@@ -265,7 +235,6 @@ private fun shouldPrefetch(listState: LazyListState): Boolean {
     return lastVisibleIndex >= info.totalItemsCount - Constants.PAGINATION_PREFETCH_DISTANCE
 }
 
-/** Shows the latest error message in [hostState] and dismisses it from state once acknowledged. */
 @Composable
 private fun ErrorSnackbarEffect(
     errorMessage: String?,
@@ -279,5 +248,3 @@ private fun ErrorSnackbarEffect(
         }
     }
 }
-
-// endregion

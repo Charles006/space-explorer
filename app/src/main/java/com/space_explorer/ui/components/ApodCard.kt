@@ -43,17 +43,6 @@ import com.space_explorer.core.Constants
 import com.space_explorer.domain.model.Astronomy
 import com.space_explorer.ui.util.DateUtils
 
-/**
- * List item card displaying an APOD with a cover image, title, date and a
- * favorite toggle.
- *
- * Composition concerns:
- *   * The full card is `clickable` to open the detail screen.
- *   * The favorite button has its own click region so taps don't bubble up
- *     into navigation — this is enforced by [IconButton] which absorbs taps.
- *   * Video items show a `PlayCircle` overlay so users see they will open
- *     external content; static images do not get the overlay.
- */
 @Composable
 fun ApodCard(
     astronomy: Astronomy,
@@ -77,8 +66,6 @@ fun ApodCard(
     }
 }
 
-// region ── Internals ──────────────────────────────────────────────────────
-
 @Composable
 private fun CardCover(astronomy: Astronomy) {
     Box(
@@ -87,9 +74,6 @@ private fun CardCover(astronomy: Astronomy) {
             .aspectRatio(Constants.APOD_CARD_COVER_ASPECT_RATIO)
             .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
     ) {
-        // Short-circuit: skip the Coil request entirely when we know the URL is
-        // unusable (NASA sometimes returns blank urls). This avoids noisy Coil
-        // error logs and a wasted HTTP roundtrip.
         if (astronomy.imageUrl.isBlank()) {
             CoverError()
         } else {
@@ -193,10 +177,6 @@ private fun FavoriteToggle(astronomy: Astronomy, onToggle: () -> Unit) {
     }
 }
 
-// endregion
-
-// region ── Previews ───────────────────────────────────────────────────────
-
 private class AstronomyPreviewProvider : PreviewParameterProvider<Astronomy> {
     override val values = sequenceOf(
         sampleAstronomy(id = "1", title = "Mars Sunrise", mediaType = "image", isFavorite = false),
@@ -227,11 +207,5 @@ private class AstronomyPreviewProvider : PreviewParameterProvider<Astronomy> {
 private fun ApodCardPreview(
     @PreviewParameter(AstronomyPreviewProvider::class) astronomy: Astronomy
 ) {
-    ApodCard(
-        astronomy = astronomy,
-        onClick = {},
-        onToggleFavorite = {}
-    )
+    ApodCard(astronomy = astronomy, onClick = {}, onToggleFavorite = {})
 }
-
-// endregion
