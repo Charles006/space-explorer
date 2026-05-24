@@ -1,5 +1,8 @@
 # Space Explorer
 
+[![CI](https://github.com/Charles006/space-explorer/actions/workflows/android.yml/badge.svg)](https://github.com/Charles006/space-explorer/actions/workflows/android.yml)
+[![codecov](https://codecov.io/gh/Charles006/space-explorer/branch/main/graph/badge.svg)](https://codecov.io/gh/Charles006/space-explorer)
+
 Android app (Jetpack Compose) que lista las imagenes y videos de NASA APOD,
 permite buscar por fecha, marcar favoritos y reproducir los videos dentro de
 la app.
