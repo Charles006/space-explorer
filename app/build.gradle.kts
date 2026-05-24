@@ -1,5 +1,5 @@
-import java.util.Properties
 import java.io.FileInputStream
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -7,14 +7,18 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.kover)
+    alias(libs.plugins.detekt)
+    alias(libs.plugins.spotless)
 }
 
-val localProperties = Properties().apply {
-    val localPropertiesFile = rootProject.file("local.properties")
-    if (localPropertiesFile.exists()) {
-        load(FileInputStream(localPropertiesFile))
+val localProperties =
+    Properties().apply {
+        val localPropertiesFile = rootProject.file("local.properties")
+        if (localPropertiesFile.exists()) {
+            load(FileInputStream(localPropertiesFile))
+        }
     }
-}
 val nasaApiKey: String = localProperties.getProperty("NASA_API_KEY", "DEMO_KEY")
 
 android {
@@ -45,7 +49,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -155,7 +159,81 @@ dependencies {
     androidTestImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.truth)
 
-
     // Debug
     debugImplementation(libs.androidx.ui.tooling)
+
+    detektPlugins(libs.detekt.formatting)
+}
+
+kover {
+    reports {
+        filters {
+            excludes {
+                classes(
+                    "*.BuildConfig",
+                    "*.databinding.*",
+                    "*Hilt*",
+                    "*_Factory*",
+                    "*_Provide*",
+                    "*_MembersInjector*",
+                    "*ComposableSingletons*",
+                    "*\$*Preview*",
+                    "*.theme.*",
+                )
+                packages(
+                    "com.space_explorer.ui.theme",
+                    "com.space_explorer.di",
+                    "hilt_aggregated_deps",
+                )
+            }
+        }
+        verify {
+            rule {
+                groupBy = kotlinx.kover.gradle.plugin.dsl.GroupingEntityType.APPLICATION
+                minBound(40, kotlinx.kover.gradle.plugin.dsl.CoverageUnit.LINE)
+            }
+        }
+    }
+}
+
+detekt {
+    toolVersion = libs.versions.detekt.get()
+    config.setFrom(files("$rootDir/config/detekt/detekt.yml"))
+    buildUponDefaultConfig = true
+    parallel = true
+    autoCorrect = false
+    baseline = file("$projectDir/config/detekt/baseline.xml")
+}
+
+tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+    jvmTarget = "17"
+    reports {
+        html.required.set(true)
+        xml.required.set(true)
+        sarif.required.set(false)
+        md.required.set(false)
+    }
+    exclude("**/build/**", "**/generated/**")
+}
+
+spotless {
+    kotlin {
+        target("src/**/*.kt")
+        targetExclude("**/build/**", "**/generated/**")
+        ktlint("1.3.1").editorConfigOverride(
+            mapOf(
+                "ktlint_standard_no-wildcard-imports" to "disabled",
+                "ktlint_standard_filename" to "disabled",
+                "ktlint_standard_function-naming" to "disabled",
+                "ktlint_standard_package-name" to "disabled",
+                "ktlint_standard_property-naming" to "disabled",
+            ),
+        )
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+    kotlinGradle {
+        target("*.gradle.kts", "**/*.gradle.kts")
+        ktlint("1.3.1")
+    }
 }

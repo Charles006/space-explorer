@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ThemeViewModel @Inject constructor(
-    private val themePreferences: ThemePreferences
+    private val themePreferences: ThemePreferences,
 ) : ViewModel() {
 
     val themeMode: StateFlow<ThemeMode> = themePreferences.themeMode

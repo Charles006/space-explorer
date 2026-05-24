@@ -40,7 +40,7 @@ class AstronomyRepositoryImplTest {
         val responses = listOf(
             apodResponse("2026-05-20", "Older"),
             apodResponse("2026-05-22", "Newest"),
-            apodResponse("2026-05-21", "Middle")
+            apodResponse("2026-05-21", "Middle"),
         )
         whenever(apiService.getApodRange(any(), any(), any())).thenReturn(responses)
         whenever(favoriteDao.exists(any())).thenReturn(false)
@@ -68,7 +68,7 @@ class AstronomyRepositoryImplTest {
         val responses = listOf(
             apodResponse("2026-05-22", "Valid"),
             apodResponseWithEmptyUrl("2026-05-21", "Broken"),
-            apodResponse("2026-05-20", "AlsoValid")
+            apodResponse("2026-05-20", "AlsoValid"),
         )
         whenever(apiService.getApodRange(any(), any(), any())).thenReturn(responses)
         whenever(favoriteDao.exists(any())).thenReturn(false)
@@ -166,7 +166,7 @@ class AstronomyRepositoryImplTest {
             hdImageUrl = null,
             videoUrl = null,
             mediaType = "image",
-            copyright = null
+            copyright = null,
         )
         whenever(favoriteDao.observeAll()).thenReturn(flowOf(listOf(entity)))
 
@@ -195,7 +195,7 @@ class AstronomyRepositoryImplTest {
         url = "https://image/$date.jpg",
         hdUrl = "https://image/$date.hd.jpg",
         mediaType = "image",
-        copyright = null
+        copyright = null,
     )
 
     private fun apodResponseWithEmptyUrl(date: String, title: String) = ApodResponse(
@@ -205,7 +205,7 @@ class AstronomyRepositoryImplTest {
         url = "",
         hdUrl = null,
         mediaType = "image",
-        copyright = null
+        copyright = null,
     )
 
     private fun sampleAstronomy() = Astronomy(
@@ -218,13 +218,13 @@ class AstronomyRepositoryImplTest {
         videoUrl = null,
         mediaType = "image",
         copyright = null,
-        isFavorite = false
+        isFavorite = false,
     )
 
     private fun httpException(code: Int): HttpException = HttpException(
         Response.error<Any>(
             code,
-            "{}".toResponseBody("application/json".toMediaTypeOrNull())
-        )
+            "{}".toResponseBody("application/json".toMediaTypeOrNull()),
+        ),
     )
 }

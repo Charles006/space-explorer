@@ -43,7 +43,7 @@ class NasaApiServiceTest {
     @Test
     fun `getApodByDate parses response successfully`() = runTest {
         mockWebServer.enqueue(
-            MockResponse().setBody(SINGLE_APOD_JSON).setResponseCode(200)
+            MockResponse().setBody(SINGLE_APOD_JSON).setResponseCode(200),
         )
 
         val response = apiService.getApodByDate("2026-05-22")
@@ -56,7 +56,7 @@ class NasaApiServiceTest {
     @Test
     fun `getApodRange parses array response`() = runTest {
         mockWebServer.enqueue(
-            MockResponse().setBody(RANGE_APOD_JSON).setResponseCode(200)
+            MockResponse().setBody(RANGE_APOD_JSON).setResponseCode(200),
         )
 
         val list = apiService.getApodRange("2026-05-20", "2026-05-22")
@@ -68,7 +68,7 @@ class NasaApiServiceTest {
     @Test
     fun `getApodByDate appends api_key query parameter`() = runTest {
         mockWebServer.enqueue(
-            MockResponse().setBody(SINGLE_APOD_JSON).setResponseCode(200)
+            MockResponse().setBody(SINGLE_APOD_JSON).setResponseCode(200),
         )
 
         apiService.getApodByDate("2026-05-22")

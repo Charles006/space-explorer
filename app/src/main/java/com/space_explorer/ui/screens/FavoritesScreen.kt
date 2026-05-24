@@ -49,7 +49,7 @@ fun FavoritesScreen(
     onAstronomyClick: (Astronomy) -> Unit,
     isDarkTheme: Boolean,
     onToggleTheme: () -> Unit,
-    viewModel: FavoritesViewModel = hiltViewModel()
+    viewModel: FavoritesViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var searchQuery by rememberSaveable { mutableStateOf("") }
@@ -65,10 +65,10 @@ fun FavoritesScreen(
                     ThemeToggleButton(isDarkTheme = isDarkTheme, onToggle = onToggleTheme)
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
+                    containerColor = MaterialTheme.colorScheme.surface,
+                ),
             )
-        }
+        },
     ) { innerPadding ->
         when {
             uiState.isLoading ->
@@ -84,7 +84,7 @@ fun FavoritesScreen(
                 searchQuery = searchQuery,
                 onSearchQueryChange = { searchQuery = it },
                 onAstronomyClick = onAstronomyClick,
-                onRemove = viewModel::removeFavorite
+                onRemove = viewModel::removeFavorite,
             )
         }
     }
@@ -98,14 +98,14 @@ private fun FavoritesList(
     searchQuery: String,
     onSearchQueryChange: (String) -> Unit,
     onAstronomyClick: (Astronomy) -> Unit,
-    onRemove: (Astronomy) -> Unit
+    onRemove: (Astronomy) -> Unit,
 ) {
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
             .testTag("favorites_list"),
         contentPadding = PaddingValues(vertical = 12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item {
             FavoritesFilterField(query = searchQuery, onQueryChange = onSearchQueryChange)
@@ -119,7 +119,7 @@ private fun FavoritesList(
                     astronomy = favorite,
                     onClick = { onAstronomyClick(favorite) },
                     onToggleFavorite = { onRemove(favorite) },
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                    modifier = Modifier.padding(horizontal = 16.dp),
                 )
             }
         }
@@ -144,6 +144,6 @@ private fun FavoritesFilterField(query: String, onQueryChange: (String) -> Unit)
                 }
             }
         },
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
     )
 }

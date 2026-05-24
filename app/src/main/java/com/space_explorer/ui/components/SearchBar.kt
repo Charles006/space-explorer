@@ -41,7 +41,7 @@ fun AstronomySearchBar(
     query: String,
     onQueryChange: (String) -> Unit,
     onRemoteSearch: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val keyboard = LocalSoftwareKeyboardController.current
     val isValidDate = DateUtils.isValidIsoDate(query)
@@ -49,7 +49,7 @@ fun AstronomySearchBar(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 16.dp),
     ) {
         OutlinedTextField(
             value = query,
@@ -69,25 +69,25 @@ fun AstronomySearchBar(
             },
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Search,
-                keyboardType = KeyboardType.Ascii
+                keyboardType = KeyboardType.Ascii,
             ),
             keyboardActions = KeyboardActions(
                 onSearch = {
                     if (isValidDate) onRemoteSearch(query)
                     keyboard?.hide()
-                }
-            )
+                },
+            ),
         )
 
         AnimatedVisibility(
             visible = isValidDate,
             enter = fadeIn() + expandVertically(),
-            exit = fadeOut() + shrinkVertically()
+            exit = fadeOut() + shrinkVertically(),
         ) {
             Row(
                 modifier = Modifier.padding(top = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 AssistChip(
                     onClick = { onRemoteSearch(query) },
@@ -95,7 +95,7 @@ fun AstronomySearchBar(
                     leadingIcon = {
                         Icon(Icons.Outlined.CalendarMonth, contentDescription = null)
                     },
-                    modifier = Modifier.testTag("remote_search_chip")
+                    modifier = Modifier.testTag("remote_search_chip"),
                 )
             }
         }
@@ -109,7 +109,7 @@ private class SearchBarPreviewProvider : PreviewParameterProvider<String> {
 @Preview(showBackground = true)
 @Composable
 private fun AstronomySearchBarPreview(
-    @PreviewParameter(SearchBarPreviewProvider::class) query: String
+    @PreviewParameter(SearchBarPreviewProvider::class) query: String,
 ) {
     AstronomySearchBar(query = query, onQueryChange = {}, onRemoteSearch = {})
 }

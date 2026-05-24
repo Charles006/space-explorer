@@ -26,7 +26,7 @@ class EmbeddedVideoPlayerTest {
             EmbeddedVideoPlayer(
                 embedUrl = "https://youtube.com/embed/abc",
                 thumbnailUrl = "https://img/x.jpg",
-                contentDescription = "Test"
+                contentDescription = "Test",
             )
         }
         composeRule.onNodeWithTag("embedded_video_play_button").assertIsDisplayed()
@@ -38,7 +38,7 @@ class EmbeddedVideoPlayerTest {
             EmbeddedVideoPlayer(
                 embedUrl = "https://youtube.com/embed/abc",
                 thumbnailUrl = "",
-                contentDescription = "Test"
+                contentDescription = "Test",
             )
         }
         composeRule.onNodeWithTag("embedded_video_play_button").performClick()
@@ -52,7 +52,7 @@ class EmbeddedVideoPlayerTest {
             EmbeddedVideoPlayer(
                 embedUrl = "https://youtube.com/embed/abc",
                 thumbnailUrl = "",
-                contentDescription = contentDesc
+                contentDescription = contentDesc,
             )
         }
         composeRule.onNodeWithTag("embedded_video_play_button").performClick()

@@ -41,7 +41,7 @@ class FavoritesViewModelTest {
     fun `uiState exposes favorites from repository`() = runTest {
         val favorites = listOf(
             astronomy("2026-05-22", "Mars"),
-            astronomy("2026-05-21", "Lunar Eclipse")
+            astronomy("2026-05-21", "Lunar Eclipse"),
         )
         whenever(repository.getFavorites()).thenReturn(flowOf(favorites))
 
@@ -76,7 +76,7 @@ class FavoritesViewModelTest {
         val favorites = listOf(
             astronomy("2026-05-22", "Mars Sunrise"),
             astronomy("2026-05-21", "Lunar Eclipse"),
-            astronomy("2026-05-20", "Saturn rings")
+            astronomy("2026-05-20", "Saturn rings"),
         )
         whenever(repository.getFavorites()).thenReturn(MutableStateFlow(favorites))
 
@@ -105,6 +105,6 @@ class FavoritesViewModelTest {
         videoUrl = null,
         mediaType = "image",
         copyright = null,
-        isFavorite = true
+        isFavorite = true,
     )
 }

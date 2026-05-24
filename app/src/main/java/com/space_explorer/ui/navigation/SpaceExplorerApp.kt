@@ -33,7 +33,7 @@ import com.space_explorer.ui.screens.HomeScreen
 fun SpaceExplorerApp(
     isDarkTheme: Boolean,
     onToggleTheme: () -> Unit,
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController = rememberNavController(),
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
@@ -57,17 +57,17 @@ fun SpaceExplorerApp(
                             },
                             icon = { Icon(item.icon, contentDescription = label) },
                             label = { Text(label) },
-                            modifier = Modifier.testTag("tab_${item.destination.route}")
+                            modifier = Modifier.testTag("tab_${item.destination.route}"),
                         )
                     }
                 }
             }
-        }
+        },
     ) { innerPadding ->
         NavHost(
             navController = navController,
             startDestination = HomeDestination.route,
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.padding(innerPadding),
         ) {
             composable(HomeDestination.route) {
                 HomeScreen(
@@ -75,7 +75,7 @@ fun SpaceExplorerApp(
                     onToggleTheme = onToggleTheme,
                     onAstronomyClick = { astronomy ->
                         navController.navigate(DetailDestination.build(astronomy.id))
-                    }
+                    },
                 )
             }
             composable(FavoritesDestination.route) {
@@ -84,19 +84,21 @@ fun SpaceExplorerApp(
                     onToggleTheme = onToggleTheme,
                     onAstronomyClick = { astronomy ->
                         navController.navigate(DetailDestination.build(astronomy.id))
-                    }
+                    },
                 )
             }
             composable(
                 route = DetailDestination.route,
-                arguments = listOf(navArgument(DetailDestination.ARG_ID) {
-                    type = NavType.StringType
-                })
+                arguments = listOf(
+                    navArgument(DetailDestination.ARG_ID) {
+                        type = NavType.StringType
+                    },
+                ),
             ) {
                 DetailScreen(
                     isDarkTheme = isDarkTheme,
                     onToggleTheme = onToggleTheme,
-                    onBack = { navController.popBackStack() }
+                    onBack = { navController.popBackStack() },
                 )
             }
         }
@@ -106,12 +108,12 @@ fun SpaceExplorerApp(
 private data class BottomBarItem(
     val destination: Destination,
     @StringRes val labelRes: Int,
-    val icon: ImageVector
+    val icon: ImageVector,
 )
 
 private val bottomBarItems = listOf(
     BottomBarItem(HomeDestination, R.string.nav_tab_explore, Icons.Outlined.Public),
-    BottomBarItem(FavoritesDestination, R.string.nav_tab_favorites, Icons.Outlined.Star)
+    BottomBarItem(FavoritesDestination, R.string.nav_tab_favorites, Icons.Outlined.Star),
 )
 
 private val TOP_LEVEL_ROUTES = setOf(HomeDestination.route, FavoritesDestination.route)

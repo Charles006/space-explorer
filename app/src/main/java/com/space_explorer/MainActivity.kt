@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
             SpaceExplorerTheme(darkTheme = isDark) {
                 SpaceExplorerApp(
                     isDarkTheme = isDark,
-                    onToggleTheme = { themeViewModel.toggleTheme(isDark) }
+                    onToggleTheme = { themeViewModel.toggleTheme(isDark) },
                 )
             }
         }

@@ -20,20 +20,20 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FavoritesViewModel @Inject constructor(
-    private val repository: AstronomyRepository
+    private val repository: AstronomyRepository,
 ) : ViewModel() {
 
     private val searchQuery = MutableStateFlow("")
 
     val uiState: StateFlow<FavoritesUiState> = combine(
         repository.getFavorites(),
-        searchQuery
+        searchQuery,
     ) { favorites, query ->
         FavoritesUiState(
             favorites = applyFilter(favorites, query),
             isLoading = false,
             error = null,
-            searchQuery = query
+            searchQuery = query,
         )
     }
         .onStart { emit(FavoritesUiState(isLoading = true)) }
@@ -42,14 +42,14 @@ class FavoritesViewModel @Inject constructor(
                 FavoritesUiState(
                     favorites = emptyList(),
                     isLoading = false,
-                    error = throwable.toError()
-                )
+                    error = throwable.toError(),
+                ),
             )
         }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(Constants.STATE_FLOW_STOP_TIMEOUT_MS),
-            initialValue = FavoritesUiState(isLoading = true)
+            initialValue = FavoritesUiState(isLoading = true),
         )
 
     fun onSearchQueryChanged(query: String) {

@@ -58,7 +58,7 @@ class AstronomyMapperTest {
     fun fromApi_emptyUrl_imageUrlEmpty() {
         val astronomy = AstronomyMapper.fromApi(
             imageResponse().copy(url = ""),
-            isFavorite = false
+            isFavorite = false,
         )
         assertThat(astronomy.imageUrl).isEmpty()
         assertThat(astronomy.title).isEqualTo("Mars Sunrise")
@@ -68,7 +68,7 @@ class AstronomyMapperTest {
     fun fromApi_nonHttpUrl_imageUrlEmpty() {
         val astronomy = AstronomyMapper.fromApi(
             imageResponse().copy(url = "ftp://invalid"),
-            isFavorite = false
+            isFavorite = false,
         )
         assertThat(astronomy.imageUrl).isEmpty()
     }
@@ -83,7 +83,7 @@ class AstronomyMapperTest {
             hdUrl = null,
             mediaType = "video",
             copyright = null,
-            thumbnailUrl = "https://img.youtube.com/vi/abc/maxres.jpg"
+            thumbnailUrl = "https://img.youtube.com/vi/abc/maxres.jpg",
         )
 
         val a = AstronomyMapper.fromApi(response, isFavorite = false)
@@ -103,7 +103,7 @@ class AstronomyMapperTest {
             hdUrl = null,
             mediaType = "video",
             copyright = null,
-            thumbnailUrl = null
+            thumbnailUrl = null,
         )
 
         val a = AstronomyMapper.fromApi(response, isFavorite = false)
@@ -137,12 +137,12 @@ class AstronomyMapperTest {
         url = "https://nasa/x.jpg",
         hdUrl = "https://nasa/x-hd.jpg",
         mediaType = "image",
-        copyright = "NASA"
+        copyright = "NASA",
     )
 
     private fun videoResponse(
         thumbnailUrl: String?,
-        url: String = "https://nasa/embed/x"
+        url: String = "https://nasa/embed/x",
     ) = ApodResponse(
         date = "2026-05-22",
         title = "Some Video",
@@ -151,6 +151,6 @@ class AstronomyMapperTest {
         hdUrl = null,
         mediaType = "video",
         copyright = null,
-        thumbnailUrl = thumbnailUrl
+        thumbnailUrl = thumbnailUrl,
     )
 }

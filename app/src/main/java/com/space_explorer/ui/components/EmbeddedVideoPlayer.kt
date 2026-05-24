@@ -36,7 +36,7 @@ fun EmbeddedVideoPlayer(
     embedUrl: String,
     thumbnailUrl: String,
     contentDescription: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     var isPlaying by rememberSaveable(embedUrl) { mutableStateOf(false) }
     val webViewHolder = remember { mutableStateOf<WebView?>(null) }
@@ -45,18 +45,18 @@ fun EmbeddedVideoPlayer(
         modifier = modifier
             .fillMaxSize()
             .background(Color.Black)
-            .testTag("embedded_video_player")
+            .testTag("embedded_video_player"),
     ) {
         if (!isPlaying) {
             ThumbnailWithPlayButton(
                 thumbnailUrl = thumbnailUrl,
                 contentDescription = contentDescription,
-                onPlay = { isPlaying = true }
+                onPlay = { isPlaying = true },
             )
         } else {
             EmbeddedWebView(
                 embedUrl = embedUrl,
-                onWebViewCreated = { webViewHolder.value = it }
+                onWebViewCreated = { webViewHolder.value = it },
             )
         }
     }
@@ -77,14 +77,14 @@ fun EmbeddedVideoPlayer(
 private fun ThumbnailWithPlayButton(
     thumbnailUrl: String,
     contentDescription: String,
-    onPlay: () -> Unit
+    onPlay: () -> Unit,
 ) {
     if (thumbnailUrl.isNotBlank()) {
         SubcomposeAsyncImage(
             model = thumbnailUrl,
             contentDescription = contentDescription,
             modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.Crop,
         )
     }
     Box(
@@ -92,13 +92,13 @@ private fun ThumbnailWithPlayButton(
             .fillMaxSize()
             .clickable(onClick = onPlay)
             .testTag("embedded_video_play_button"),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         Icon(
             imageVector = Icons.Filled.PlayCircle,
             contentDescription = stringResource(R.string.cd_play_video),
             tint = Color.White.copy(alpha = 0.9f),
-            modifier = Modifier.size(80.dp)
+            modifier = Modifier.size(80.dp),
         )
     }
 }
@@ -107,7 +107,7 @@ private fun ThumbnailWithPlayButton(
 @Composable
 private fun EmbeddedWebView(
     embedUrl: String,
-    onWebViewCreated: (WebView) -> Unit
+    onWebViewCreated: (WebView) -> Unit,
 ) {
     AndroidView(
         modifier = Modifier
@@ -117,7 +117,7 @@ private fun EmbeddedWebView(
             WebView(context).apply {
                 layoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT
+                    ViewGroup.LayoutParams.MATCH_PARENT,
                 )
                 settings.apply {
                     javaScriptEnabled = true
@@ -132,11 +132,11 @@ private fun EmbeddedWebView(
                     buildEmbedHtml(embedUrl),
                     "text/html",
                     "utf-8",
-                    null
+                    null,
                 )
                 onWebViewCreated(this)
             }
-        }
+        },
     )
 }
 

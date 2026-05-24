@@ -14,5 +14,5 @@ data class FavoriteEntity(
     val videoUrl: String?,
     val mediaType: String,
     val copyright: String?,
-    val savedAt: Long = System.currentTimeMillis()
+    val savedAt: Long = System.currentTimeMillis(),
 )

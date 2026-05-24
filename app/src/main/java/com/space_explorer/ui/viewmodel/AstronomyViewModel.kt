@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AstronomyViewModel @Inject constructor(
-    private val repository: AstronomyRepository
+    private val repository: AstronomyRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -74,7 +74,7 @@ class AstronomyViewModel @Inject constructor(
                             items = items,
                             filteredItems = applyLocalFilter(items, current.searchQuery),
                             isRefreshing = false,
-                            endReached = false
+                            endReached = false,
                         )
                     }
                 }
@@ -88,7 +88,7 @@ class AstronomyViewModel @Inject constructor(
         _uiState.update { current ->
             current.copy(
                 searchQuery = query,
-                filteredItems = applyLocalFilter(current.items, query)
+                filteredItems = applyLocalFilter(current.items, query),
             )
         }
     }
@@ -108,7 +108,7 @@ class AstronomyViewModel @Inject constructor(
                             items = merged,
                             filteredItems = applyLocalFilter(merged, current.searchQuery),
                             isRemoteSearching = false,
-                            remoteSearchDate = date
+                            remoteSearchDate = date,
                         )
                     }
                 }
@@ -139,7 +139,7 @@ class AstronomyViewModel @Inject constructor(
                     }
                     current.copy(
                         items = updatedItems,
-                        filteredItems = applyLocalFilter(updatedItems, current.searchQuery)
+                        filteredItems = applyLocalFilter(updatedItems, current.searchQuery),
                     )
                 }
             }
@@ -154,7 +154,7 @@ class AstronomyViewModel @Inject constructor(
                 filteredItems = applyLocalFilter(items, current.searchQuery),
                 isLoading = false,
                 error = null,
-                endReached = false
+                endReached = false,
             )
         }
     }
@@ -171,7 +171,7 @@ class AstronomyViewModel @Inject constructor(
                 items = merged,
                 filteredItems = applyLocalFilter(merged, current.searchQuery),
                 isLoadingMore = false,
-                error = null
+                error = null,
             )
         }
     }
@@ -180,7 +180,7 @@ class AstronomyViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 isLoading = if (clearLoading) false else it.isLoading,
-                error = throwable.toError()
+                error = throwable.toError(),
             )
         }
     }

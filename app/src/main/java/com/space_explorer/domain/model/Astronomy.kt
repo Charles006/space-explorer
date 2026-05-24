@@ -13,7 +13,7 @@ data class Astronomy(
     val videoUrl: String?,
     val mediaType: String,
     val copyright: String?,
-    val isFavorite: Boolean = false
+    val isFavorite: Boolean = false,
 ) {
     val isImage: Boolean get() = mediaType == "image"
     val isVideo: Boolean get() = mediaType == "video"

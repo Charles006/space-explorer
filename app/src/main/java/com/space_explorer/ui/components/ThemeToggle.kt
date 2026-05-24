@@ -22,28 +22,28 @@ import com.space_explorer.R
 fun ThemeToggleButton(
     isDarkTheme: Boolean,
     onToggle: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     IconButton(
         onClick = onToggle,
-        modifier = modifier.testTag("theme_toggle_button")
+        modifier = modifier.testTag("theme_toggle_button"),
     ) {
         AnimatedContent(
             targetState = isDarkTheme,
             transitionSpec = {
                 (scaleIn() + fadeIn()) togetherWith (scaleOut() + fadeOut())
             },
-            label = "theme_toggle"
+            label = "theme_toggle",
         ) { dark ->
             if (dark) {
                 Icon(
                     imageVector = Icons.Outlined.LightMode,
-                    contentDescription = stringResource(R.string.theme_toggle_to_light)
+                    contentDescription = stringResource(R.string.theme_toggle_to_light),
                 )
             } else {
                 Icon(
                     imageVector = Icons.Outlined.DarkMode,
-                    contentDescription = stringResource(R.string.theme_toggle_to_dark)
+                    contentDescription = stringResource(R.string.theme_toggle_to_dark),
                 )
             }
         }

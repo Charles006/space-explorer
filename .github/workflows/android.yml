@@ -33,6 +33,33 @@ jobs:
       - name: Run unit tests
         run: ./gradlew test --no-daemon --stacktrace
 
+      - name: Verify formatting
+        run: ./gradlew spotlessCheck --no-daemon
+
+      - name: Run detekt
+        run: ./gradlew detekt --no-daemon
+
+      - name: Coverage report (XML for Codecov)
+        run: ./gradlew koverXmlReportDebug --no-daemon
+
+      - name: Coverage threshold check
+        run: ./gradlew koverVerifyDebug --no-daemon
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: app/build/reports/kover/reportDebug.xml
+          flags: unittests
+          fail_ci_if_error: false
+
+      - name: Upload detekt report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: detekt-report
+          path: app/build/reports/detekt/
+
       - name: Assemble debug APK
         run: ./gradlew assembleDebug --no-daemon
 

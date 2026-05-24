@@ -26,7 +26,7 @@ class FavoriteDaoTest {
     fun setUp() {
         database = Room.inMemoryDatabaseBuilder(
             ApplicationProvider.getApplicationContext(),
-            SpaceExplorerDatabase::class.java
+            SpaceExplorerDatabase::class.java,
         ).allowMainThreadQueries().build()
         dao = database.favoriteDao()
     }
@@ -88,6 +88,6 @@ class FavoriteDaoTest {
         hdImageUrl = null,
         videoUrl = null,
         mediaType = "image",
-        copyright = null
+        copyright = null,
     )
 }

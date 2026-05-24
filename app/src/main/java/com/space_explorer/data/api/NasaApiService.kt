@@ -9,13 +9,13 @@ interface NasaApiService {
     @GET("planetary/apod")
     suspend fun getApodByDate(
         @Query("date") date: String,
-        @Query("thumbs") thumbs: Boolean = true
+        @Query("thumbs") thumbs: Boolean = true,
     ): ApodResponse
 
     @GET("planetary/apod")
     suspend fun getApodRange(
         @Query("start_date") startDate: String,
         @Query("end_date") endDate: String,
-        @Query("thumbs") thumbs: Boolean = true
+        @Query("thumbs") thumbs: Boolean = true,
     ): List<ApodResponse>
 }

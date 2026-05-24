@@ -40,14 +40,14 @@ fun LoadingState(modifier: Modifier = Modifier) {
             .fillMaxSize()
             .semantics { contentDescription = cd },
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         CircularProgressIndicator()
         Spacer(Modifier.height(16.dp))
         Text(
             text = stringResource(R.string.state_loading),
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
@@ -56,7 +56,7 @@ fun LoadingState(modifier: Modifier = Modifier) {
 fun ErrorState(
     message: String? = null,
     onRetry: (() -> Unit)? = null,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val resolved = message ?: stringResource(R.string.state_error_default_message)
     val announcement = stringResource(R.string.state_error_announcement, resolved)
@@ -66,26 +66,26 @@ fun ErrorState(
             .padding(24.dp)
             .semantics { contentDescription = announcement },
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Icon(
             imageVector = Icons.Outlined.CloudOff,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.error,
-            modifier = Modifier.size(64.dp)
+            modifier = Modifier.size(64.dp),
         )
         Spacer(Modifier.height(16.dp))
         Text(
             text = stringResource(R.string.state_error_title),
             style = MaterialTheme.typography.titleMedium,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
         Spacer(Modifier.height(8.dp))
         Text(
             text = resolved,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
         if (onRetry != null) {
             Spacer(Modifier.height(16.dp))
@@ -101,7 +101,7 @@ fun EmptyState(
     title: String? = null,
     description: String? = null,
     icon: ImageVector = Icons.Outlined.Search,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier
@@ -109,26 +109,26 @@ fun EmptyState(
             .padding(24.dp)
             .wrapContentHeight(),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Icon(
             imageVector = icon,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.size(64.dp)
+            modifier = Modifier.size(64.dp),
         )
         Spacer(Modifier.height(16.dp))
         Text(
             text = title ?: stringResource(R.string.state_empty_title),
             style = MaterialTheme.typography.titleMedium,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
         Spacer(Modifier.height(8.dp))
         Text(
             text = description ?: stringResource(R.string.state_empty_description),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
     }
 }
@@ -139,7 +139,7 @@ fun EmptyFavorites(modifier: Modifier = Modifier) {
         title = stringResource(R.string.favorites_empty_title),
         description = stringResource(R.string.favorites_empty_description),
         icon = Icons.Outlined.Star,
-        modifier = modifier
+        modifier = modifier,
     )
 }
 
@@ -149,7 +149,7 @@ fun InlineLoadingFooter(modifier: Modifier = Modifier) {
         modifier = modifier
             .fillMaxWidth()
             .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         CircularProgressIndicator(modifier = Modifier.size(24.dp))
     }
@@ -164,7 +164,7 @@ private class StatePreviewProvider : PreviewParameterProvider<PreviewState> {
 @Preview(showBackground = true)
 @Composable
 private fun StatePreview(
-    @PreviewParameter(StatePreviewProvider::class) state: PreviewState
+    @PreviewParameter(StatePreviewProvider::class) state: PreviewState,
 ) {
     when (state) {
         PreviewState.LOADING -> LoadingState()

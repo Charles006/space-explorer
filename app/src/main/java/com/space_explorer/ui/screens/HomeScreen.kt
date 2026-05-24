@@ -66,7 +66,7 @@ fun HomeScreen(
     onAstronomyClick: (Astronomy) -> Unit,
     isDarkTheme: Boolean,
     onToggleTheme: () -> Unit,
-    viewModel: AstronomyViewModel = hiltViewModel()
+    viewModel: AstronomyViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val listState = rememberLazyListState()
@@ -80,7 +80,7 @@ fun HomeScreen(
     PaginationEffect(
         listState = listState,
         endReached = uiState.endReached,
-        onLoadMore = viewModel::loadNextPage
+        onLoadMore = viewModel::loadNextPage,
     )
 
     val errorText = rememberErrorText(uiState.error)
@@ -105,13 +105,13 @@ fun HomeScreen(
                     IconButton(onClick = viewModel::refresh) {
                         Icon(
                             Icons.Outlined.Refresh,
-                            contentDescription = stringResource(R.string.home_action_refresh)
+                            contentDescription = stringResource(R.string.home_action_refresh),
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
+                    containerColor = MaterialTheme.colorScheme.surface,
+                ),
             )
         },
         floatingActionButton = {
@@ -121,12 +121,12 @@ fun HomeScreen(
                 }) {
                     Icon(
                         Icons.Outlined.ArrowUpward,
-                        contentDescription = stringResource(R.string.home_action_scroll_to_top)
+                        contentDescription = stringResource(R.string.home_action_scroll_to_top),
                     )
                 }
             }
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { innerPadding ->
         HomeBody(
             modifier = Modifier.padding(innerPadding),
@@ -138,7 +138,7 @@ fun HomeScreen(
             onRemoteSearch = viewModel::onRemoteSearch,
             onRetry = viewModel::loadInitialData,
             onAstronomyClick = onAstronomyClick,
-            onToggleFavorite = viewModel::toggleFavorite
+            onToggleFavorite = viewModel::toggleFavorite,
         )
     }
 }
@@ -154,7 +154,7 @@ private fun HomeBody(
     onRemoteSearch: (String) -> Unit,
     onRetry: () -> Unit,
     onAstronomyClick: (Astronomy) -> Unit,
-    onToggleFavorite: (Astronomy) -> Unit
+    onToggleFavorite: (Astronomy) -> Unit,
 ) {
     when {
         uiState.isLoading && uiState.items.isEmpty() ->
@@ -171,7 +171,7 @@ private fun HomeBody(
             onSearchQueryChange = onSearchQueryChange,
             onRemoteSearch = onRemoteSearch,
             onAstronomyClick = onAstronomyClick,
-            onToggleFavorite = onToggleFavorite
+            onToggleFavorite = onToggleFavorite,
         )
     }
 }
@@ -185,7 +185,7 @@ private fun HomeList(
     onSearchQueryChange: (String) -> Unit,
     onRemoteSearch: (String) -> Unit,
     onAstronomyClick: (Astronomy) -> Unit,
-    onToggleFavorite: (Astronomy) -> Unit
+    onToggleFavorite: (Astronomy) -> Unit,
 ) {
     LazyColumn(
         state = listState,
@@ -193,13 +193,13 @@ private fun HomeList(
             .fillMaxSize()
             .testTag("home_list"),
         contentPadding = PaddingValues(vertical = 12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item {
             AstronomySearchBar(
                 query = searchQuery,
                 onQueryChange = onSearchQueryChange,
-                onRemoteSearch = onRemoteSearch
+                onRemoteSearch = onRemoteSearch,
             )
         }
 
@@ -207,7 +207,7 @@ private fun HomeList(
             item {
                 EmptyState(
                     title = stringResource(R.string.home_empty_title),
-                    description = stringResource(R.string.home_empty_description)
+                    description = stringResource(R.string.home_empty_description),
                 )
             }
         } else {
@@ -216,7 +216,7 @@ private fun HomeList(
                     astronomy = astronomy,
                     onClick = { onAstronomyClick(astronomy) },
                     onToggleFavorite = { onToggleFavorite(astronomy) },
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                    modifier = Modifier.padding(horizontal = 16.dp),
                 )
             }
         }
@@ -233,7 +233,7 @@ private fun HomeList(
 private fun PaginationEffect(
     listState: LazyListState,
     endReached: Boolean,
-    onLoadMore: () -> Unit
+    onLoadMore: () -> Unit,
 ) {
     LaunchedEffect(listState, endReached) {
         snapshotFlow { shouldPrefetch(listState) }

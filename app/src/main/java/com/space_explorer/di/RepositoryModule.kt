@@ -15,6 +15,6 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindAstronomyRepository(
-        impl: AstronomyRepositoryImpl
+        impl: AstronomyRepositoryImpl,
     ): AstronomyRepository
 }

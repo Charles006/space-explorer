@@ -52,7 +52,7 @@ object NetworkModule {
     @Singleton
     fun provideOkHttpClient(
         apiKeyInterceptor: ApiKeyInterceptor,
-        loggingInterceptor: HttpLoggingInterceptor
+        loggingInterceptor: HttpLoggingInterceptor,
     ): OkHttpClient = OkHttpClient.Builder()
         .addInterceptor(apiKeyInterceptor)
         .addInterceptor(loggingInterceptor)
@@ -73,7 +73,7 @@ object NetworkModule {
     fun provideRetrofit(
         okHttpClient: OkHttpClient,
         moshi: Moshi,
-        @Named("nasaBaseUrl") baseUrl: String
+        @Named("nasaBaseUrl") baseUrl: String,
     ): Retrofit = Retrofit.Builder()
         .baseUrl(baseUrl)
         .client(okHttpClient)

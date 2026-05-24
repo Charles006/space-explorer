@@ -1,0 +1,127 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>ComplexCondition:AstronomyViewModel.kt$AstronomyViewModel$state.isLoadingMore || state.isLoading || state.endReached || state.isRemoteSearching</ID>
+    <ID>FunctionNaming:ApodCard.kt$@Composable fun ApodCard( astronomy: Astronomy, onClick: () -&gt; Unit, onToggleFavorite: () -&gt; Unit, modifier: Modifier = Modifier, )</ID>
+    <ID>FunctionNaming:ApodCard.kt$@Composable private fun CardCover(astronomy: Astronomy)</ID>
+    <ID>FunctionNaming:ApodCard.kt$@Composable private fun CardFooter(astronomy: Astronomy, onToggleFavorite: () -&gt; Unit)</ID>
+    <ID>FunctionNaming:ApodCard.kt$@Composable private fun CoverError()</ID>
+    <ID>FunctionNaming:ApodCard.kt$@Composable private fun CoverPlaceholder()</ID>
+    <ID>FunctionNaming:ApodCard.kt$@Composable private fun FavoriteToggle(astronomy: Astronomy, onToggle: () -&gt; Unit)</ID>
+    <ID>FunctionNaming:ApodCard.kt$@Composable private fun VideoOverlay()</ID>
+    <ID>FunctionNaming:ApodCard.kt$@Preview(showBackground = true) @Composable private fun ApodCardPreview( @PreviewParameter(AstronomyPreviewProvider::class) astronomy: Astronomy, )</ID>
+    <ID>FunctionNaming:DetailScreen.kt$@Composable private fun DetailContent( astronomy: Astronomy, scrollState: ScrollState, modifier: Modifier, )</ID>
+    <ID>FunctionNaming:DetailScreen.kt$@Composable private fun DetailCoverError()</ID>
+    <ID>FunctionNaming:DetailScreen.kt$@Composable private fun DetailCoverImage(astronomy: Astronomy)</ID>
+    <ID>FunctionNaming:DetailScreen.kt$@Composable private fun DetailCoverPlaceholder()</ID>
+    <ID>FunctionNaming:DetailScreen.kt$@Composable private fun DetailMetadata(astronomy: Astronomy)</ID>
+    <ID>FunctionNaming:DetailScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun DetailScreen( onBack: () -&gt; Unit, isDarkTheme: Boolean, onToggleTheme: () -&gt; Unit, viewModel: DetailViewModel = hiltViewModel(), )</ID>
+    <ID>FunctionNaming:DetailScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable private fun DetailTopBar( title: String?, astronomy: Astronomy?, isDarkTheme: Boolean, onBack: () -&gt; Unit, onToggleTheme: () -&gt; Unit, onToggleFavorite: () -&gt; Unit, )</ID>
+    <ID>FunctionNaming:EmbeddedVideoPlayer.kt$@Composable private fun ThumbnailWithPlayButton( thumbnailUrl: String, contentDescription: String, onPlay: () -&gt; Unit, )</ID>
+    <ID>FunctionNaming:EmbeddedVideoPlayer.kt$@SuppressLint("SetJavaScriptEnabled") @Composable fun EmbeddedVideoPlayer( embedUrl: String, thumbnailUrl: String, contentDescription: String, modifier: Modifier = Modifier, )</ID>
+    <ID>FunctionNaming:EmbeddedVideoPlayer.kt$@SuppressLint("SetJavaScriptEnabled") @Composable private fun EmbeddedWebView( embedUrl: String, onWebViewCreated: (WebView) -&gt; Unit, )</ID>
+    <ID>FunctionNaming:FavoritesScreen.kt$@Composable private fun FavoritesFilterField(query: String, onQueryChange: (String) -&gt; Unit)</ID>
+    <ID>FunctionNaming:FavoritesScreen.kt$@Composable private fun FavoritesList( modifier: Modifier, favorites: List&lt;Astronomy&gt;, isEmpty: Boolean, searchQuery: String, onSearchQueryChange: (String) -&gt; Unit, onAstronomyClick: (Astronomy) -&gt; Unit, onRemove: (Astronomy) -&gt; Unit, )</ID>
+    <ID>FunctionNaming:FavoritesScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun FavoritesScreen( onAstronomyClick: (Astronomy) -&gt; Unit, isDarkTheme: Boolean, onToggleTheme: () -&gt; Unit, viewModel: FavoritesViewModel = hiltViewModel(), )</ID>
+    <ID>FunctionNaming:HomeScreen.kt$@Composable private fun HomeBody( modifier: Modifier, uiState: HomeUiState, errorText: String?, listState: LazyListState, searchQuery: String, onSearchQueryChange: (String) -&gt; Unit, onRemoteSearch: (String) -&gt; Unit, onRetry: () -&gt; Unit, onAstronomyClick: (Astronomy) -&gt; Unit, onToggleFavorite: (Astronomy) -&gt; Unit, )</ID>
+    <ID>FunctionNaming:HomeScreen.kt$@Composable private fun HomeList( modifier: Modifier, uiState: HomeUiState, listState: LazyListState, searchQuery: String, onSearchQueryChange: (String) -&gt; Unit, onRemoteSearch: (String) -&gt; Unit, onAstronomyClick: (Astronomy) -&gt; Unit, onToggleFavorite: (Astronomy) -&gt; Unit, )</ID>
+    <ID>FunctionNaming:HomeScreen.kt$@Composable private fun PaginationEffect( listState: LazyListState, endReached: Boolean, onLoadMore: () -&gt; Unit, )</ID>
+    <ID>FunctionNaming:HomeScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun HomeScreen( onAstronomyClick: (Astronomy) -&gt; Unit, isDarkTheme: Boolean, onToggleTheme: () -&gt; Unit, viewModel: AstronomyViewModel = hiltViewModel(), )</ID>
+    <ID>FunctionNaming:SearchBar.kt$@Composable fun AstronomySearchBar( query: String, onQueryChange: (String) -&gt; Unit, onRemoteSearch: (String) -&gt; Unit, modifier: Modifier = Modifier, )</ID>
+    <ID>FunctionNaming:SearchBar.kt$@Preview(showBackground = true) @Composable private fun AstronomySearchBarPreview( @PreviewParameter(SearchBarPreviewProvider::class) query: String, )</ID>
+    <ID>FunctionNaming:SpaceExplorerApp.kt$@Composable fun SpaceExplorerApp( isDarkTheme: Boolean, onToggleTheme: () -&gt; Unit, navController: NavHostController = rememberNavController(), )</ID>
+    <ID>FunctionNaming:StateComponents.kt$@Composable fun EmptyFavorites(modifier: Modifier = Modifier)</ID>
+    <ID>FunctionNaming:StateComponents.kt$@Composable fun EmptyState( title: String? = null, description: String? = null, icon: ImageVector = Icons.Outlined.Search, modifier: Modifier = Modifier, )</ID>
+    <ID>FunctionNaming:StateComponents.kt$@Composable fun ErrorState( message: String? = null, onRetry: (() -&gt; Unit)? = null, modifier: Modifier = Modifier, )</ID>
+    <ID>FunctionNaming:StateComponents.kt$@Composable fun InlineLoadingFooter(modifier: Modifier = Modifier)</ID>
+    <ID>FunctionNaming:StateComponents.kt$@Composable fun LoadingState(modifier: Modifier = Modifier)</ID>
+    <ID>FunctionNaming:StateComponents.kt$@Preview(showBackground = true) @Composable private fun StatePreview( @PreviewParameter(StatePreviewProvider::class) state: PreviewState, )</ID>
+    <ID>FunctionNaming:Theme.kt$@Composable fun SpaceExplorerTheme( darkTheme: Boolean = isSystemInDarkTheme(), dynamicColor: Boolean = true, content: @Composable () -&gt; Unit, )</ID>
+    <ID>FunctionNaming:ThemeToggle.kt$@Composable fun ThemeToggleButton( isDarkTheme: Boolean, onToggle: () -&gt; Unit, modifier: Modifier = Modifier, )</ID>
+    <ID>FunctionNaming:ThemeToggle.kt$@Preview(showBackground = true) @Composable private fun ThemeToggleButtonDarkPreview()</ID>
+    <ID>FunctionNaming:ThemeToggle.kt$@Preview(showBackground = true) @Composable private fun ThemeToggleButtonLightPreview()</ID>
+    <ID>InstanceOfCheckForException:ApiErrorMapper.kt$ApiErrorMapper$e is kotlinx.coroutines.CancellationException</ID>
+    <ID>LongMethod:HomeScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun HomeScreen( onAstronomyClick: (Astronomy) -&gt; Unit, isDarkTheme: Boolean, onToggleTheme: () -&gt; Unit, viewModel: AstronomyViewModel = hiltViewModel(), )</ID>
+    <ID>LongMethod:SpaceExplorerApp.kt$@Composable fun SpaceExplorerApp( isDarkTheme: Boolean, onToggleTheme: () -&gt; Unit, navController: NavHostController = rememberNavController(), )</ID>
+    <ID>LongParameterList:DetailScreen.kt$( title: String?, astronomy: Astronomy?, isDarkTheme: Boolean, onBack: () -&gt; Unit, onToggleTheme: () -&gt; Unit, onToggleFavorite: () -&gt; Unit, )</ID>
+    <ID>LongParameterList:FavoritesScreen.kt$( modifier: Modifier, favorites: List&lt;Astronomy&gt;, isEmpty: Boolean, searchQuery: String, onSearchQueryChange: (String) -&gt; Unit, onAstronomyClick: (Astronomy) -&gt; Unit, onRemove: (Astronomy) -&gt; Unit, )</ID>
+    <ID>LongParameterList:HomeScreen.kt$( modifier: Modifier, uiState: HomeUiState, errorText: String?, listState: LazyListState, searchQuery: String, onSearchQueryChange: (String) -&gt; Unit, onRemoteSearch: (String) -&gt; Unit, onRetry: () -&gt; Unit, onAstronomyClick: (Astronomy) -&gt; Unit, onToggleFavorite: (Astronomy) -&gt; Unit, )</ID>
+    <ID>LongParameterList:HomeScreen.kt$( modifier: Modifier, uiState: HomeUiState, listState: LazyListState, searchQuery: String, onSearchQueryChange: (String) -&gt; Unit, onRemoteSearch: (String) -&gt; Unit, onAstronomyClick: (Astronomy) -&gt; Unit, onToggleFavorite: (Astronomy) -&gt; Unit, )</ID>
+    <ID>MagicNumber:ApiErrorMapper.kt$ApiErrorMapper$401</ID>
+    <ID>MagicNumber:ApiErrorMapper.kt$ApiErrorMapper$403</ID>
+    <ID>MagicNumber:ApiErrorMapper.kt$ApiErrorMapper$429</ID>
+    <ID>MagicNumber:ApiErrorMapper.kt$ApiErrorMapper$500</ID>
+    <ID>MagicNumber:ApiErrorMapper.kt$ApiErrorMapper$599</ID>
+    <ID>MagicNumber:Color.kt$0xFF006A6A</ID>
+    <ID>MagicNumber:Color.kt$0xFF3A41B5</ID>
+    <ID>MagicNumber:Color.kt$0xFF80D5D5</ID>
+    <ID>MagicNumber:Color.kt$0xFF8B3A8E</ID>
+    <ID>MagicNumber:Color.kt$0xFFBBC2FF</ID>
+    <ID>MagicNumber:Color.kt$0xFFFFA9F5</ID>
+    <ID>MagicNumber:DetailScreen.kt$30</ID>
+    <ID>MaxLineLength:ApodCardTest.kt$ApodCardTest$composeRule.onNodeWithContentDescription(ctx.getString(com.space_explorer.R.string.cd_remove_from_favorites)).assertIsDisplayed()</ID>
+    <ID>MaxLineLength:AstronomyError.kt$AstronomyError$HttpError : AstronomyError</ID>
+    <ID>PackageNaming:ApiErrorMapper.kt$package com.space_explorer.data.network</ID>
+    <ID>PackageNaming:ApiErrorMapperTest.kt$package com.space_explorer.data.network</ID>
+    <ID>PackageNaming:ApiKeyInterceptor.kt$package com.space_explorer.data.api</ID>
+    <ID>PackageNaming:ApodCard.kt$package com.space_explorer.ui.components</ID>
+    <ID>PackageNaming:ApodCardTest.kt$package com.space_explorer.ui.components</ID>
+    <ID>PackageNaming:ApodResponse.kt$package com.space_explorer.data.model</ID>
+    <ID>PackageNaming:Astronomy.kt$package com.space_explorer.domain.model</ID>
+    <ID>PackageNaming:AstronomyError.kt$package com.space_explorer.domain.error</ID>
+    <ID>PackageNaming:AstronomyMapper.kt$package com.space_explorer.data.mapper</ID>
+    <ID>PackageNaming:AstronomyMapperTest.kt$package com.space_explorer.data.mapper</ID>
+    <ID>PackageNaming:AstronomyRepository.kt$package com.space_explorer.domain.repository</ID>
+    <ID>PackageNaming:AstronomyRepositoryImpl.kt$package com.space_explorer.data.repository</ID>
+    <ID>PackageNaming:AstronomyRepositoryImplTest.kt$package com.space_explorer.data.repository</ID>
+    <ID>PackageNaming:AstronomyViewModel.kt$package com.space_explorer.ui.viewmodel</ID>
+    <ID>PackageNaming:AstronomyViewModelTest.kt$package com.space_explorer.ui.viewmodel</ID>
+    <ID>PackageNaming:Color.kt$package com.space_explorer.ui.theme</ID>
+    <ID>PackageNaming:Constants.kt$package com.space_explorer.core</ID>
+    <ID>PackageNaming:DatabaseModule.kt$package com.space_explorer.di</ID>
+    <ID>PackageNaming:DateUtils.kt$package com.space_explorer.ui.util</ID>
+    <ID>PackageNaming:DateUtilsTest.kt$package com.space_explorer.ui.util</ID>
+    <ID>PackageNaming:Destinations.kt$package com.space_explorer.ui.navigation</ID>
+    <ID>PackageNaming:DetailScreen.kt$package com.space_explorer.ui.screens</ID>
+    <ID>PackageNaming:DetailViewModel.kt$package com.space_explorer.ui.viewmodel</ID>
+    <ID>PackageNaming:EmbedHtmlBuilderTest.kt$package com.space_explorer.ui.components</ID>
+    <ID>PackageNaming:EmbeddedVideoPlayer.kt$package com.space_explorer.ui.components</ID>
+    <ID>PackageNaming:EmbeddedVideoPlayerTest.kt$package com.space_explorer.ui.components</ID>
+    <ID>PackageNaming:ErrorText.kt$package com.space_explorer.ui.components</ID>
+    <ID>PackageNaming:FavoriteDao.kt$package com.space_explorer.data.local.dao</ID>
+    <ID>PackageNaming:FavoriteDaoTest.kt$package com.space_explorer.data.local</ID>
+    <ID>PackageNaming:FavoriteEntity.kt$package com.space_explorer.data.local.entity</ID>
+    <ID>PackageNaming:FavoritesScreen.kt$package com.space_explorer.ui.screens</ID>
+    <ID>PackageNaming:FavoritesViewModel.kt$package com.space_explorer.ui.viewmodel</ID>
+    <ID>PackageNaming:FavoritesViewModelTest.kt$package com.space_explorer.ui.viewmodel</ID>
+    <ID>PackageNaming:HomeScreen.kt$package com.space_explorer.ui.screens</ID>
+    <ID>PackageNaming:MainActivity.kt$package com.space_explorer</ID>
+    <ID>PackageNaming:NasaApiService.kt$package com.space_explorer.data.api</ID>
+    <ID>PackageNaming:NasaApiServiceTest.kt$package com.space_explorer.data.api</ID>
+    <ID>PackageNaming:NetworkModule.kt$package com.space_explorer.di</ID>
+    <ID>PackageNaming:RepositoryModule.kt$package com.space_explorer.di</ID>
+    <ID>PackageNaming:SearchBar.kt$package com.space_explorer.ui.components</ID>
+    <ID>PackageNaming:SpaceExplorerApp.kt$package com.space_explorer.ui.navigation</ID>
+    <ID>PackageNaming:SpaceExplorerApplication.kt$package com.space_explorer</ID>
+    <ID>PackageNaming:SpaceExplorerDatabase.kt$package com.space_explorer.data.local.database</ID>
+    <ID>PackageNaming:StateComponents.kt$package com.space_explorer.ui.components</ID>
+    <ID>PackageNaming:Theme.kt$package com.space_explorer.ui.theme</ID>
+    <ID>PackageNaming:ThemePreferences.kt$package com.space_explorer.data.preferences</ID>
+    <ID>PackageNaming:ThemeToggle.kt$package com.space_explorer.ui.components</ID>
+    <ID>PackageNaming:ThemeToggleButtonTest.kt$package com.space_explorer.ui.components</ID>
+    <ID>PackageNaming:ThemeViewModel.kt$package com.space_explorer.ui.viewmodel</ID>
+    <ID>PackageNaming:Type.kt$package com.space_explorer.ui.theme</ID>
+    <ID>PackageNaming:UiState.kt$package com.space_explorer.ui.state</ID>
+    <ID>ReturnCount:EmbeddedVideoPlayer.kt$internal fun normalizeToEmbedUrl(url: String): String</ID>
+    <ID>ReturnCount:HomeScreen.kt$private fun shouldPrefetch(listState: LazyListState): Boolean</ID>
+    <ID>SpreadOperator:ErrorText.kt$(it.messageRes, *it.messageArgs.toTypedArray())</ID>
+    <ID>TooGenericExceptionCaught:ApiErrorMapper.kt$ApiErrorMapper$e: Exception</ID>
+    <ID>TooManyFunctions:AstronomyViewModel.kt$AstronomyViewModel : ViewModel</ID>
+    <ID>UnusedPrivateMember:ApodCard.kt$@Preview(showBackground = true) @Composable private fun ApodCardPreview( @PreviewParameter(AstronomyPreviewProvider::class) astronomy: Astronomy, )</ID>
+    <ID>UnusedPrivateMember:SearchBar.kt$@Preview(showBackground = true) @Composable private fun AstronomySearchBarPreview( @PreviewParameter(SearchBarPreviewProvider::class) query: String, )</ID>
+    <ID>UnusedPrivateMember:StateComponents.kt$@Preview(showBackground = true) @Composable private fun StatePreview( @PreviewParameter(StatePreviewProvider::class) state: PreviewState, )</ID>
+    <ID>UnusedPrivateMember:ThemeToggle.kt$@Preview(showBackground = true) @Composable private fun ThemeToggleButtonDarkPreview()</ID>
+    <ID>UnusedPrivateMember:ThemeToggle.kt$@Preview(showBackground = true) @Composable private fun ThemeToggleButtonLightPreview()</ID>
+  </CurrentIssues>
+</SmellBaseline>

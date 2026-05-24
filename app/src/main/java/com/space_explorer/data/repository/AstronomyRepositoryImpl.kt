@@ -16,14 +16,14 @@ import javax.inject.Singleton
 @Singleton
 class AstronomyRepositoryImpl @Inject constructor(
     private val apiService: NasaApiService,
-    private val favoriteDao: FavoriteDao
+    private val favoriteDao: FavoriteDao,
 ) : AstronomyRepository {
 
     private val favoriteMutex = Mutex()
 
     override suspend fun getAstronomyRange(
         startDate: String,
-        endDate: String
+        endDate: String,
     ): Result<List<Astronomy>> = ApiErrorMapper.runCatching {
         val responses = apiService.getApodRange(startDate, endDate)
         val favoriteIds = collectFavoriteIds(responses.map { it.date })

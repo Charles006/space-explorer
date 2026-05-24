@@ -90,7 +90,7 @@ class AstronomyViewModelTest {
         val items = listOf(
             astronomy("2026-05-22", "Mars Sunrise"),
             astronomy("2026-05-21", "Lunar Eclipse"),
-            astronomy("2026-05-20", "Saturn rings")
+            astronomy("2026-05-20", "Saturn rings"),
         )
         whenever(repository.getAstronomyRange(any(), any())).thenReturn(Result.success(items))
         whenever(repository.observeFavoriteIds()).thenReturn(MutableStateFlow(emptySet()))
@@ -184,6 +184,6 @@ class AstronomyViewModelTest {
         videoUrl = null,
         mediaType = "image",
         copyright = null,
-        isFavorite = isFavorite
+        isFavorite = isFavorite,
     )
 }

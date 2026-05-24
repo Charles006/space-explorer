@@ -65,7 +65,7 @@ fun DetailScreen(
     onBack: () -> Unit,
     isDarkTheme: Boolean,
     onToggleTheme: () -> Unit,
-    viewModel: DetailViewModel = hiltViewModel()
+    viewModel: DetailViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val scrollState = rememberScrollState()
@@ -88,10 +88,10 @@ fun DetailScreen(
                 isDarkTheme = isDarkTheme,
                 onBack = onBack,
                 onToggleTheme = onToggleTheme,
-                onToggleFavorite = viewModel::toggleFavorite
+                onToggleFavorite = viewModel::toggleFavorite,
             )
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { innerPadding ->
         when {
             uiState.isLoading -> LoadingState(modifier = Modifier.padding(innerPadding))
@@ -99,13 +99,13 @@ fun DetailScreen(
             astronomy == null && errorText != null -> ErrorState(
                 message = errorText,
                 onRetry = viewModel::retry,
-                modifier = Modifier.padding(innerPadding)
+                modifier = Modifier.padding(innerPadding),
             )
 
             astronomy != null -> DetailContent(
                 astronomy = astronomy,
                 scrollState = scrollState,
-                modifier = Modifier.padding(innerPadding)
+                modifier = Modifier.padding(innerPadding),
             )
         }
     }
@@ -119,7 +119,7 @@ private fun DetailTopBar(
     isDarkTheme: Boolean,
     onBack: () -> Unit,
     onToggleTheme: () -> Unit,
-    onToggleFavorite: () -> Unit
+    onToggleFavorite: () -> Unit,
 ) {
     TopAppBar(
         title = { Text(title?.take(30) ?: stringResource(R.string.detail_title_fallback)) },
@@ -127,31 +127,37 @@ private fun DetailTopBar(
             IconButton(onClick = onBack) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                    contentDescription = stringResource(R.string.detail_action_back)
+                    contentDescription = stringResource(R.string.detail_action_back),
                 )
             }
         },
         actions = {
             ThemeToggleButton(isDarkTheme = isDarkTheme, onToggle = onToggleTheme)
             if (astronomy != null) {
-                val cdRes = if (astronomy.isFavorite) R.string.cd_remove_from_favorites
-                else R.string.cd_add_to_favorites
+                val cdRes = if (astronomy.isFavorite) {
+                    R.string.cd_remove_from_favorites
+                } else {
+                    R.string.cd_add_to_favorites
+                }
                 IconButton(
                     onClick = onToggleFavorite,
-                    modifier = Modifier.testTag("detail_favorite_button")
+                    modifier = Modifier.testTag("detail_favorite_button"),
                 ) {
                     Icon(
                         imageVector = if (astronomy.isFavorite) Icons.Filled.Star else Icons.Outlined.StarBorder,
                         contentDescription = stringResource(cdRes),
-                        tint = if (astronomy.isFavorite) MaterialTheme.colorScheme.primary
-                        else MaterialTheme.colorScheme.onSurface
+                        tint = if (astronomy.isFavorite) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.onSurface
+                        },
                     )
                 }
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        )
+            containerColor = MaterialTheme.colorScheme.surface,
+        ),
     )
 }
 
@@ -159,14 +165,14 @@ private fun DetailTopBar(
 private fun DetailContent(
     astronomy: Astronomy,
     scrollState: ScrollState,
-    modifier: Modifier
+    modifier: Modifier,
 ) {
     Column(
         modifier = modifier
             .fillMaxSize()
             .verticalScroll(scrollState)
             .animateContentSize()
-            .testTag("detail_content")
+            .testTag("detail_content"),
     ) {
         DetailCoverImage(astronomy)
         DetailMetadata(astronomy)
@@ -180,14 +186,14 @@ private fun DetailCoverImage(astronomy: Astronomy) {
             .fillMaxWidth()
             .aspectRatio(Constants.DETAIL_COVER_ASPECT_RATIO)
             .padding(16.dp)
-            .clip(RoundedCornerShape(24.dp))
+            .clip(RoundedCornerShape(24.dp)),
     ) {
         if (astronomy.isVideo && !astronomy.videoUrl.isNullOrBlank()) {
             EmbeddedVideoPlayer(
                 embedUrl = astronomy.videoUrl,
                 thumbnailUrl = astronomy.imageUrl,
                 contentDescription = astronomy.title,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
             )
             return@Box
         }
@@ -205,7 +211,7 @@ private fun DetailCoverImage(astronomy: Astronomy) {
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop,
                 loading = { DetailCoverPlaceholder() },
-                error = { DetailCoverError() }
+                error = { DetailCoverError() },
             )
         }
     }
@@ -215,7 +221,7 @@ private fun DetailCoverImage(astronomy: Astronomy) {
 private fun DetailCoverPlaceholder() {
     Surface(
         color = MaterialTheme.colorScheme.surfaceVariant,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) {}
 }
 
@@ -225,13 +231,13 @@ private fun DetailCoverError() {
         modifier = Modifier
             .fillMaxSize()
             .testTag("detail_cover_error"),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         Icon(
             imageVector = Icons.Outlined.BrokenImage,
             contentDescription = stringResource(R.string.cd_unavailable_content),
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.size(64.dp)
+            modifier = Modifier.size(64.dp),
         )
     }
 }
@@ -240,29 +246,29 @@ private fun DetailCoverError() {
 private fun DetailMetadata(astronomy: Astronomy) {
     Column(
         modifier = Modifier.padding(horizontal = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Text(
             text = astronomy.title,
             style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
         )
         Text(
             text = DateUtils.prettyPrint(astronomy.date),
             style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.primary
+            color = MaterialTheme.colorScheme.primary,
         )
         astronomy.copyright?.let { copyright ->
             Text(
                 text = stringResource(R.string.detail_credit_prefix, copyright),
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
         Text(
             text = astronomy.explanation,
             style = MaterialTheme.typography.bodyMedium,
-            lineHeight = MaterialTheme.typography.bodyMedium.lineHeight
+            lineHeight = MaterialTheme.typography.bodyMedium.lineHeight,
         )
         Spacer(Modifier.height(24.dp))
     }

@@ -12,5 +12,5 @@ data class ApodResponse(
     @Json(name = "hdurl") val hdUrl: String? = null,
     @Json(name = "media_type") val mediaType: String,
     @Json(name = "copyright") val copyright: String? = null,
-    @Json(name = "thumbnail_url") val thumbnailUrl: String? = null
+    @Json(name = "thumbnail_url") val thumbnailUrl: String? = null,
 )

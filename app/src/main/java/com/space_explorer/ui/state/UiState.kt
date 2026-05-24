@@ -15,7 +15,7 @@ data class HomeUiState(
     val searchQuery: String = "",
     val remoteSearchDate: String? = null,
     val isRemoteSearching: Boolean = false,
-    val endReached: Boolean = false
+    val endReached: Boolean = false,
 ) {
     val isEmpty: Boolean
         get() = !isLoading && filteredItems.isEmpty() && error == null
@@ -26,7 +26,7 @@ data class FavoritesUiState(
     val favorites: List<Astronomy> = emptyList(),
     val isLoading: Boolean = true,
     val error: AstronomyError? = null,
-    val searchQuery: String = ""
+    val searchQuery: String = "",
 ) {
     val isEmpty: Boolean
         get() = !isLoading && favorites.isEmpty() && error == null
@@ -36,5 +36,5 @@ data class FavoritesUiState(
 data class DetailUiState(
     val astronomy: Astronomy? = null,
     val isLoading: Boolean = true,
-    val error: AstronomyError? = null
+    val error: AstronomyError? = null,
 )

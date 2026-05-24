@@ -50,7 +50,7 @@ fun ApodCard(
     astronomy: Astronomy,
     onClick: () -> Unit,
     onToggleFavorite: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Card(
         modifier = modifier
@@ -59,7 +59,7 @@ fun ApodCard(
             .clickable(onClick = onClick)
             .testTag("apod_card_${astronomy.id}"),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        shape = RoundedCornerShape(20.dp)
+        shape = RoundedCornerShape(20.dp),
     ) {
         Column {
             CardCover(astronomy)
@@ -74,7 +74,7 @@ private fun CardCover(astronomy: Astronomy) {
         modifier = Modifier
             .fillMaxWidth()
             .aspectRatio(Constants.APOD_CARD_COVER_ASPECT_RATIO)
-            .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
+            .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)),
     ) {
         if (astronomy.imageUrl.isBlank()) {
             CoverError()
@@ -88,7 +88,7 @@ private fun CardCover(astronomy: Astronomy) {
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop,
                 loading = { CoverPlaceholder() },
-                error = { CoverError() }
+                error = { CoverError() },
             )
         }
 
@@ -102,7 +102,7 @@ private fun CardCover(astronomy: Astronomy) {
 private fun CoverPlaceholder() {
     Surface(
         color = MaterialTheme.colorScheme.surfaceVariant,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) {}
 }
 
@@ -112,7 +112,7 @@ private fun CoverError() {
         Icon(
             imageVector = Icons.Outlined.PlayCircle,
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
@@ -121,14 +121,14 @@ private fun CoverError() {
 private fun VideoOverlay() {
     Surface(
         color = MaterialTheme.colorScheme.scrim.copy(alpha = 0.4f),
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) {
         Box(contentAlignment = Alignment.Center) {
             Icon(
                 imageVector = Icons.Outlined.PlayCircle,
                 contentDescription = stringResource(R.string.cd_video),
                 tint = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier.size(56.dp)
+                modifier = Modifier.size(56.dp),
             )
         }
     }
@@ -140,7 +140,7 @@ private fun CardFooter(astronomy: Astronomy, onToggleFavorite: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
@@ -148,13 +148,13 @@ private fun CardFooter(astronomy: Astronomy, onToggleFavorite: () -> Unit) {
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold,
                 maxLines = 2,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
             )
             Spacer(Modifier.height(4.dp))
             Text(
                 text = DateUtils.prettyPrint(astronomy.date),
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
         FavoriteToggle(astronomy, onToggleFavorite)
@@ -166,7 +166,7 @@ private fun FavoriteToggle(astronomy: Astronomy, onToggle: () -> Unit) {
     val cdRes = if (astronomy.isFavorite) R.string.cd_remove_from_favorites else R.string.cd_add_to_favorites
     IconButton(
         onClick = onToggle,
-        modifier = Modifier.testTag("favorite_button_${astronomy.id}")
+        modifier = Modifier.testTag("favorite_button_${astronomy.id}"),
     ) {
         Icon(
             imageVector = if (astronomy.isFavorite) Icons.Filled.Star else Icons.Outlined.StarBorder,
@@ -175,7 +175,7 @@ private fun FavoriteToggle(astronomy: Astronomy, onToggle: () -> Unit) {
                 MaterialTheme.colorScheme.primary
             } else {
                 MaterialTheme.colorScheme.onSurfaceVariant
-            }
+            },
         )
     }
 }
@@ -183,14 +183,14 @@ private fun FavoriteToggle(astronomy: Astronomy, onToggle: () -> Unit) {
 private class AstronomyPreviewProvider : PreviewParameterProvider<Astronomy> {
     override val values = sequenceOf(
         sampleAstronomy(id = "1", title = "Mars Sunrise", mediaType = "image", isFavorite = false),
-        sampleAstronomy(id = "2", title = "Saturn's Rings", mediaType = "video", isFavorite = true)
+        sampleAstronomy(id = "2", title = "Saturn's Rings", mediaType = "video", isFavorite = true),
     )
 
     private fun sampleAstronomy(
         id: String,
         title: String,
         mediaType: String,
-        isFavorite: Boolean
+        isFavorite: Boolean,
     ) = Astronomy(
         id = id,
         title = title,
@@ -201,14 +201,14 @@ private class AstronomyPreviewProvider : PreviewParameterProvider<Astronomy> {
         explanation = "Preview text for $title",
         copyright = "NASA",
         mediaType = mediaType,
-        isFavorite = isFavorite
+        isFavorite = isFavorite,
     )
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun ApodCardPreview(
-    @PreviewParameter(AstronomyPreviewProvider::class) astronomy: Astronomy
+    @PreviewParameter(AstronomyPreviewProvider::class) astronomy: Astronomy,
 ) {
     ApodCard(astronomy = astronomy, onClick = {}, onToggleFavorite = {})
 }

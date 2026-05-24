@@ -68,6 +68,6 @@ class ApiErrorMapperTest {
     }
 
     private fun httpException(code: Int): HttpException = HttpException(
-        Response.error<Any>(code, "{}".toResponseBody("application/json".toMediaTypeOrNull()))
+        Response.error<Any>(code, "{}".toResponseBody("application/json".toMediaTypeOrNull())),
     )
 }

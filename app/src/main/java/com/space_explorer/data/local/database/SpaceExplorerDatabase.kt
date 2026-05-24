@@ -10,7 +10,7 @@ import com.space_explorer.data.local.entity.FavoriteEntity
 @Database(
     entities = [FavoriteEntity::class],
     version = 2,
-    exportSchema = false
+    exportSchema = false,
 )
 abstract class SpaceExplorerDatabase : RoomDatabase() {
     abstract fun favoriteDao(): FavoriteDao

@@ -13,20 +13,20 @@ import androidx.compose.ui.platform.LocalContext
 private val DarkColorScheme = darkColorScheme(
     primary = CosmicIndigo80,
     secondary = NebulaMagenta80,
-    tertiary = PlasmaCyan80
+    tertiary = PlasmaCyan80,
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = CosmicIndigo40,
     secondary = NebulaMagenta40,
-    tertiary = PlasmaCyan40
+    tertiary = PlasmaCyan40,
 )
 
 @Composable
 fun SpaceExplorerTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {

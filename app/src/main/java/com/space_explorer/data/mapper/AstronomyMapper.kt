@@ -38,7 +38,7 @@ object AstronomyMapper {
             videoUrl = videoUrl,
             mediaType = response.mediaType,
             copyright = response.copyright,
-            isFavorite = isFavorite
+            isFavorite = isFavorite,
         )
     }
 
@@ -52,7 +52,7 @@ object AstronomyMapper {
         videoUrl = entity.videoUrl,
         mediaType = entity.mediaType,
         copyright = entity.copyright,
-        isFavorite = true
+        isFavorite = true,
     )
 
     fun toEntity(astronomy: Astronomy): FavoriteEntity = FavoriteEntity(
@@ -64,7 +64,7 @@ object AstronomyMapper {
         hdImageUrl = astronomy.hdImageUrl,
         videoUrl = astronomy.videoUrl,
         mediaType = astronomy.mediaType,
-        copyright = astronomy.copyright
+        copyright = astronomy.copyright,
     )
 
     private fun String?.toDisplayUrlOrEmpty(): String =

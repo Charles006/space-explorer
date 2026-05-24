@@ -21,7 +21,7 @@ object DatabaseModule {
         Room.databaseBuilder(
             context,
             SpaceExplorerDatabase::class.java,
-            SpaceExplorerDatabase.DATABASE_NAME
+            SpaceExplorerDatabase.DATABASE_NAME,
         )
             .addMigrations(SpaceExplorerDatabase.MIGRATION_1_2)
             .build()

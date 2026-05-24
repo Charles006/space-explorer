@@ -32,7 +32,7 @@ class ApodCardTest {
         videoUrl = null,
         mediaType = "image",
         copyright = null,
-        isFavorite = false
+        isFavorite = false,
     )
 
     @Test
@@ -72,7 +72,7 @@ class ApodCardTest {
             ApodCard(
                 astronomy = sample.copy(isFavorite = true),
                 onClick = {},
-                onToggleFavorite = {}
+                onToggleFavorite = {},
             )
         }
 
