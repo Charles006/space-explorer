@@ -149,8 +149,11 @@ private fun EmbeddedWebView(
                 }
                 // Needed for fullscreen and certain provider scripts.
                 webChromeClient = WebChromeClient()
+                // baseUrl must match the iframe origin so YouTube does not
+                // reject playback as a "third party" embed (also part of
+                // the error 152 cure).
                 loadDataWithBaseURL(
-                    "https://www.youtube.com",
+                    "https://www.youtube-nocookie.com",
                     buildEmbedHtml(embedUrl),
                     "text/html",
                     "utf-8",
@@ -168,9 +171,15 @@ private fun EmbeddedWebView(
  * Wraps an embed [url] in a minimal HTML page with `autoplay=1` and
  * `playsinline=1` query parameters appended (without overriding existing
  * values). `internal` so it stays unit-testable from the same package.
+ *
+ * The URL is first passed through [normalizeToEmbedUrl] because NASA APOD
+ * sometimes returns watch URLs (`youtube.com/watch?v=…`) or short-form
+ * links (`youtu.be/…`) that an `<iframe>` cannot load — feeding those
+ * directly produced YouTube "error 152" on real devices.
  */
 internal fun buildEmbedHtml(url: String): String {
-    val withAutoplay = appendQueryParamIfMissing(url, "autoplay", "1")
+    val embedUrl = normalizeToEmbedUrl(url)
+    val withAutoplay = appendQueryParamIfMissing(embedUrl, "autoplay", "1")
     val withPlaysInline = appendQueryParamIfMissing(withAutoplay, "playsinline", "1")
     return """
         <!doctype html>
@@ -189,6 +198,54 @@ internal fun buildEmbedHtml(url: String): String {
         </html>
     """.trimIndent()
 }
+
+/**
+ * Normalizes any URL NASA might hand us for a video into a domain + path
+ * that an `<iframe>` can actually load. The output uses `youtube-nocookie.com`
+ * (YouTube's "privacy enhanced" mode) which has fewer embedding restrictions
+ * than `youtube.com` — this is the fix for YouTube error 152.
+ *
+ * Supported inputs:
+ *   * `https://www.youtube.com/watch?v=ID[&extra=…]` → nocookie/embed/ID
+ *   * `https://youtu.be/ID[?t=30]`                    → nocookie/embed/ID
+ *   * `https://www.youtube.com/embed/ID[?…]`          → nocookie/embed/ID
+ *   * `https://www.youtube-nocookie.com/embed/ID`     → passes through
+ *   * `https://vimeo.com/123456`                       → player.vimeo.com/video/123456
+ *   * Anything else (MP4, unknown providers)           → passes through unchanged
+ */
+internal fun normalizeToEmbedUrl(url: String): String {
+    // /embed/<id> URLs already have an iframe-safe shape — only upgrade the
+    // domain and preserve any existing query string (e.g. ?rel=0).
+    YOUTUBE_EMBED_REGEX.find(url)?.let { match ->
+        val id = match.groupValues[1]
+        val preservedQuery = match.groupValues[2]
+        return YOUTUBE_NOCOOKIE_EMBED.format(id) + preservedQuery
+    }
+    // watch?v=<id> params are user-state (t=, list=…) that do not apply to
+    // an iframe; drop them and keep just the video id.
+    YOUTUBE_WATCH_REGEX.find(url)?.let { match ->
+        return YOUTUBE_NOCOOKIE_EMBED.format(match.groupValues[1])
+    }
+    YOUTU_BE_REGEX.find(url)?.let { match ->
+        return YOUTUBE_NOCOOKIE_EMBED.format(match.groupValues[1])
+    }
+    VIMEO_REGEX.find(url)?.let { match ->
+        return VIMEO_EMBED.format(match.groupValues[1])
+    }
+    return url
+}
+
+private val YOUTUBE_EMBED_REGEX =
+    Regex("""(?:https?://)?(?:www\.)?youtube(?:-nocookie)?\.com/embed/([A-Za-z0-9_-]+)(\?[^\s]*)?""")
+private val YOUTUBE_WATCH_REGEX =
+    Regex("""(?:https?://)?(?:www\.)?youtube\.com/watch\?v=([A-Za-z0-9_-]+)""")
+private val YOUTU_BE_REGEX =
+    Regex("""(?:https?://)?(?:www\.)?youtu\.be/([A-Za-z0-9_-]+)""")
+private val VIMEO_REGEX =
+    Regex("""(?:https?://)?(?:www\.)?vimeo\.com/(\d+)""")
+
+private const val YOUTUBE_NOCOOKIE_EMBED = "https://www.youtube-nocookie.com/embed/%s"
+private const val VIMEO_EMBED = "https://player.vimeo.com/video/%s"
 
 /** Adds `key=value` to [url]'s query string only if `key=` is not already present. */
 private fun appendQueryParamIfMissing(url: String, key: String, value: String): String {

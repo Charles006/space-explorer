@@ -190,6 +190,12 @@ Detalles de implementacion:
   evitar memory leaks y reproduccion en background.
 - UX: thumbnail + boton Play; tap inicia el WebView con `autoplay=1` y
   `playsinline=1` inyectados via `buildEmbedHtml`.
+- URL normalization (`normalizeToEmbedUrl`): NASA devuelve a veces formatos
+  `youtube.com/watch?v=ID`, `youtu.be/ID` o embeds en `youtube.com` que
+  disparan "error 152" del player oficial. Se normalizan a
+  `youtube-nocookie.com/embed/ID` (privacy-enhanced mode) que tiene menos
+  restricciones de embed cross-origin. Vimeo se mapea a
+  `player.vimeo.com/video/ID`. URLs desconocidas (MP4 directo) pasan tal cual.
 
 ---
 
