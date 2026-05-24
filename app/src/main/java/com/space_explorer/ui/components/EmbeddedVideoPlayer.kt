@@ -139,6 +139,7 @@ private fun EmbeddedWebView(
 }
 
 internal fun buildEmbedHtml(url: String): String {
+    if (isDirectVideoFile(url)) return buildVideoTagHtml(url)
     val embedUrl = normalizeToEmbedUrl(url)
     val withAutoplay = appendQueryParamIfMissing(embedUrl, "autoplay", "1")
     val withPlaysInline = appendQueryParamIfMissing(withAutoplay, "playsinline", "1")
@@ -194,4 +195,39 @@ private fun appendQueryParamIfMissing(url: String, key: String, value: String): 
     if (url.contains("$key=")) return url
     val separator = if (url.contains('?')) '&' else '?'
     return "$url$separator$key=$value"
+}
+
+private fun buildVideoTagHtml(url: String): String = """
+    <!doctype html>
+    <html>
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+          html, body { margin: 0; padding: 0; height: 100vh; width: 100vw; background: #000; }
+          video { width: 100%; height: 100%; object-fit: contain; }
+        </style>
+      </head>
+      <body>
+        <video controls autoplay playsinline>
+          <source src="$url" type="${mimeTypeFor(url)}">
+        </video>
+      </body>
+    </html>
+""".trimIndent()
+
+private val DIRECT_VIDEO_EXTENSIONS = setOf("mp4", "webm", "mov", "m4v")
+
+private fun isDirectVideoFile(url: String): Boolean {
+    val path = url.substringBefore('?').substringBefore('#')
+    val ext = path.substringAfterLast('.', "").lowercase()
+    return ext in DIRECT_VIDEO_EXTENSIONS
+}
+
+private fun mimeTypeFor(url: String): String {
+    val ext = url.substringBefore('?').substringBefore('#').substringAfterLast('.', "").lowercase()
+    return when (ext) {
+        "webm" -> "video/webm"
+        "mov", "m4v" -> "video/mp4"
+        else -> "video/mp4"
+    }
 }

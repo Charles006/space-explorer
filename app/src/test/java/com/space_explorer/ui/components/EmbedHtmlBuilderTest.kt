@@ -72,4 +72,33 @@ class EmbedHtmlBuilderTest {
         assertThat(html).contains("youtube-nocookie.com/embed/abc123")
         assertThat(html).doesNotContain("watch?v=")
     }
+
+    @Test
+    fun buildEmbedHtml_mp4DirectUrl_usesVideoTag() {
+        val url = "https://apod.nasa.gov/apod/image/2605/MarsEclipse_perseverance.mp4"
+        val html = buildEmbedHtml(url)
+        assertThat(html).contains("<video")
+        assertThat(html).contains("<source src=\"$url\"")
+        assertThat(html).doesNotContain("<iframe")
+    }
+
+    @Test
+    fun buildEmbedHtml_mp4WithQueryString_stillDetectedAsDirectFile() {
+        val html = buildEmbedHtml("https://example.com/clip.mp4?token=abc")
+        assertThat(html).contains("<video")
+        assertThat(html).doesNotContain("<iframe")
+    }
+
+    @Test
+    fun buildEmbedHtml_webmDirectUrl_usesVideoTag() {
+        val html = buildEmbedHtml("https://example.com/clip.webm")
+        assertThat(html).contains("<video")
+    }
+
+    @Test
+    fun buildEmbedHtml_youtubeUrl_stillUsesIframe() {
+        val html = buildEmbedHtml("https://www.youtube.com/embed/abc123")
+        assertThat(html).contains("<iframe")
+        assertThat(html).doesNotContain("<video")
+    }
 }
