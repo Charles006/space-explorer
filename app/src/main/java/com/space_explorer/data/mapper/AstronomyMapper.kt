@@ -75,19 +75,28 @@ object AstronomyMapper {
     )
 
     /**
-     * For videos the API returns a YouTube/Vimeo embed in [ApodResponse.url];
-     * the actual frame to show is [ApodResponse.thumbnailUrl] when present.
-     * Images use [ApodResponse.url] directly.
+     * Resolves the URL Coil should render for this APOD.
+     *
+     * For videos NASA returns an embed URL in [ApodResponse.url]; the actual
+     * frame we want is [ApodResponse.thumbnailUrl] when present. Images use
+     * [ApodResponse.url] directly.
+     *
+     * NASA occasionally returns items with a blank `url` or an unsupported
+     * scheme (interactive HTML, very recent posts pending media upload,
+     * experimental formats). [toDisplayUrlOrEmpty] normalizes those into an
+     * empty string so a single bad item never tumbles an entire batch — Coil
+     * already renders an error placeholder for blank URLs, so the user still
+     * sees title / date / explanation.
      */
-    private fun resolveDisplayUrl(response: ApodResponse): String {
-        val url = if (response.mediaType == MEDIA_TYPE_VIDEO) {
-            response.thumbnailUrl ?: response.url
-        } else {
-            response.url
-        }
-        require(url.startsWith("http", ignoreCase = true)) {
-            "Invalid media url returned by API: '$url'"
-        }
-        return url
+    private fun resolveDisplayUrl(response: ApodResponse): String = when (response.mediaType) {
+        MEDIA_TYPE_VIDEO -> (response.thumbnailUrl ?: response.url).toDisplayUrlOrEmpty()
+        else -> response.url.toDisplayUrlOrEmpty()
     }
+
+    /**
+     * Returns the receiver if it is an http(s) URL, otherwise an empty string.
+     * Tolerates `null`, blank strings, and unsupported schemes (ftp, data, file).
+     */
+    private fun String?.toDisplayUrlOrEmpty(): String =
+        if (this != null && startsWith("http", ignoreCase = true)) this else ""
 }

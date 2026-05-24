@@ -86,17 +86,24 @@ private fun CardCover(astronomy: Astronomy) {
             .aspectRatio(COVER_ASPECT_RATIO)
             .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
     ) {
-        SubcomposeAsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(astronomy.imageUrl)
-                .crossfade(true)
-                .build(),
-            contentDescription = astronomy.title,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop,
-            loading = { CoverPlaceholder() },
-            error = { CoverError() }
-        )
+        // Short-circuit: skip the Coil request entirely when we know the URL is
+        // unusable (NASA sometimes returns blank urls). This avoids noisy Coil
+        // error logs and a wasted HTTP roundtrip.
+        if (astronomy.imageUrl.isBlank()) {
+            CoverError()
+        } else {
+            SubcomposeAsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(astronomy.imageUrl)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = astronomy.title,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop,
+                loading = { CoverPlaceholder() },
+                error = { CoverError() }
+            )
+        }
 
         if (!astronomy.isImage) {
             VideoOverlay()

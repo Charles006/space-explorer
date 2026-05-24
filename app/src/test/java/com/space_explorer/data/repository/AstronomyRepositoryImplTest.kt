@@ -56,6 +56,30 @@ class AstronomyRepositoryImplTest {
         assertThat(items.last().title).isEqualTo("Older")
     }
 
+    // Regression: a single item with empty 'url' tumbled the whole 10-item page,
+    // so pagination stalled at 10 items. See screenshot bug "Invalid media url
+    // returned by API: ''". The batch must survive partial bad data.
+    @Test
+    fun `getAstronomyRange returns full batch even when one item has empty url`() = runTest {
+        val responses = listOf(
+            apodResponse("2026-05-22", "Valid"),
+            apodResponseWithEmptyUrl("2026-05-21", "Broken"),
+            apodResponse("2026-05-20", "AlsoValid")
+        )
+        whenever(apiService.getApodRange(any(), any(), any())).thenReturn(responses)
+        whenever(favoriteDao.exists(any())).thenReturn(false)
+
+        val result = repository.getAstronomyRange("2026-05-20", "2026-05-22")
+
+        assertThat(result.isSuccess).isTrue()
+        val items = result.getOrThrow()
+        assertThat(items).hasSize(3)
+        assertThat(items.map { it.title }).containsExactly("Valid", "Broken", "AlsoValid")
+        // The broken item still surfaces metadata; its imageUrl is empty so Coil
+        // renders the error placeholder.
+        assertThat(items.single { it.title == "Broken" }.imageUrl).isEmpty()
+    }
+
     @Test
     fun `getAstronomyRange marks favorites correctly`() = runTest {
         val responses = listOf(apodResponse("2026-05-22", "Mars"))
@@ -195,6 +219,17 @@ class AstronomyRepositoryImplTest {
         explanation = "explanation $title",
         url = "https://image/$date.jpg",
         hdUrl = "https://image/$date.hd.jpg",
+        mediaType = "image",
+        copyright = null
+    )
+
+    /** Mimics the NASA edge case that triggered the pagination bug. */
+    private fun apodResponseWithEmptyUrl(date: String, title: String) = ApodResponse(
+        date = date,
+        title = title,
+        explanation = "explanation $title",
+        url = "",
+        hdUrl = null,
         mediaType = "image",
         copyright = null
     )

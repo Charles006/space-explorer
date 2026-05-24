@@ -198,7 +198,8 @@ class AstronomyViewModel @Inject constructor(
             current.copy(
                 items = merged,
                 filteredItems = applyLocalFilter(merged, current.searchQuery),
-                isLoadingMore = false
+                isLoadingMore = false,
+                errorMessage = null
             )
         }
     }

@@ -133,6 +133,32 @@ class AstronomyViewModelTest {
         verify(repository).toggleFavorite(item)
     }
 
+    // Regression: after a failed loadNextPage the snackbar stayed pinned even when
+    // the very next page loaded fine, because appendPage() never cleared the prior
+    // errorMessage. See screenshot bug — error sticks while list continues at 10 items.
+    @Test
+    fun `loadNextPage success clears prior errorMessage`() = runTest {
+        val initial = listOf(astronomy("2026-05-22", "First"))
+        val nextPage = listOf(astronomy("2026-05-12", "Second"))
+        whenever(repository.observeFavoriteIds()).thenReturn(MutableStateFlow(emptySet()))
+        whenever(repository.getAstronomyRange(any(), any()))
+            .thenReturn(Result.success(initial))                                  // load initial
+            .thenReturn(Result.failure(RuntimeException("boom transient")))       // first loadNextPage
+            .thenReturn(Result.success(nextPage))                                 // second loadNextPage
+
+        val viewModel = AstronomyViewModel(repository)
+        advanceUntilIdle()
+
+        viewModel.loadNextPage()
+        advanceUntilIdle()
+        assertThat(viewModel.uiState.value.errorMessage).contains("boom transient")
+
+        viewModel.loadNextPage()
+        advanceUntilIdle()
+        assertThat(viewModel.uiState.value.errorMessage).isNull()
+        assertThat(viewModel.uiState.value.items).hasSize(2)
+    }
+
     @Test
     fun `observeFavoriteIds updates isFavorite flag of items`() = runTest {
         val item = astronomy("2026-05-22", "Mars", isFavorite = false)

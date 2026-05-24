@@ -61,9 +61,27 @@ class AstronomyMapperTest {
         AstronomyMapper.fromApi(imageResponse().copy(mediaType = "audio"), isFavorite = false)
     }
 
-    @Test(expected = IllegalArgumentException::class)
-    fun `fromApi rejects non-http url`() {
-        AstronomyMapper.fromApi(imageResponse().copy(url = "ftp://x"), isFavorite = false)
+    // Regression: HomeScreen pagination was stuck at 10 items because NASA returned
+    // an item with empty 'url' and the mapper threw, killing the whole 10-item batch.
+    // See screenshot bug "Invalid media url returned by API: ''".
+    @Test
+    fun `fromApi does not throw when url is empty`() {
+        val astronomy = AstronomyMapper.fromApi(
+            imageResponse().copy(url = ""),
+            isFavorite = false
+        )
+        assertThat(astronomy.imageUrl).isEmpty()
+        assertThat(astronomy.title).isEqualTo("Mars Sunrise")
+    }
+
+    // Regression: same root cause as the empty-url case, with ftp/data/file schemes.
+    @Test
+    fun `fromApi does not throw when url uses unsupported scheme`() {
+        val astronomy = AstronomyMapper.fromApi(
+            imageResponse().copy(url = "ftp://invalid"),
+            isFavorite = false
+        )
+        assertThat(astronomy.imageUrl).isEmpty()
     }
 
     @Test
