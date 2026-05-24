@@ -3,54 +3,54 @@
     <string name="app_name">Space Explorer</string>
 
     <string name="common_action_ok">OK</string>
-    <string name="common_unknown_error">TODO Unknown error</string>
+    <string name="common_unknown_error">Unknown error</string>
 
-    <string name="nav_tab_explore">TODO Explore</string>
-    <string name="nav_tab_favorites">TODO Favorites</string>
+    <string name="nav_tab_explore">Explore</string>
+    <string name="nav_tab_favorites">Favorites</string>
 
     <string name="home_title">Space Explorer</string>
-    <string name="home_action_refresh">TODO Refresh</string>
-    <string name="home_action_scroll_to_top">TODO Scroll to top</string>
-    <string name="home_empty_title">TODO No results</string>
-    <string name="home_empty_description">TODO Try another search or clear the filter.</string>
+    <string name="home_action_refresh">Refresh</string>
+    <string name="home_action_scroll_to_top">Scroll to top</string>
+    <string name="home_empty_title">No results</string>
+    <string name="home_empty_description">Try another search or clear the filter.</string>
 
-    <string name="favorites_title">TODO Favorites</string>
-    <string name="favorites_filter_placeholder">TODO Filter favorites</string>
-    <string name="favorites_empty_title">TODO No favorites yet</string>
-    <string name="favorites_empty_description">TODO Tap the star on the main screen to add items here.</string>
+    <string name="favorites_title">Favorites</string>
+    <string name="favorites_filter_placeholder">Filter favorites</string>
+    <string name="favorites_empty_title">No favorites yet</string>
+    <string name="favorites_empty_description">Tap the star on the main screen to add items here.</string>
 
-    <string name="detail_title_fallback">TODO Detail</string>
-    <string name="detail_action_back">TODO Back</string>
-    <string name="detail_credit_prefix">TODO Credit: %1$s</string>
-    <string name="detail_no_content_to_favorite">TODO No content loaded to favorite.</string>
+    <string name="detail_title_fallback">Detail</string>
+    <string name="detail_action_back">Back</string>
+    <string name="detail_credit_prefix">Credit: %1$s</string>
+    <string name="detail_no_content_to_favorite">No content loaded to favorite.</string>
 
-    <string name="search_placeholder">TODO Search by title or date (YYYY-MM-DD)</string>
-    <string name="search_remote_chip">TODO Search date on NASA</string>
+    <string name="search_placeholder">Search by title or date (YYYY-MM-DD)</string>
+    <string name="search_remote_chip">Search date on NASA</string>
 
-    <string name="state_loading">TODO Loading content...</string>
-    <string name="state_error_title">TODO Oops, something went wrong</string>
-    <string name="state_error_default_message">TODO Could not load content</string>
-    <string name="state_action_retry">TODO Retry</string>
-    <string name="state_empty_title">TODO No results</string>
-    <string name="state_empty_description">TODO Nothing found</string>
-    <string name="state_error_announcement">TODO Error: %1$s</string>
+    <string name="state_loading">Loading content...</string>
+    <string name="state_error_title">Oops, something went wrong</string>
+    <string name="state_error_default_message">Could not load content</string>
+    <string name="state_action_retry">Retry</string>
+    <string name="state_empty_title">No results</string>
+    <string name="state_empty_description">Nothing found</string>
+    <string name="state_error_announcement">Error: %1$s</string>
 
-    <string name="cd_loading">TODO Loading</string>
-    <string name="cd_video">TODO Video</string>
-    <string name="cd_remove_from_favorites">TODO Remove from favorites</string>
-    <string name="cd_add_to_favorites">TODO Add to favorites</string>
-    <string name="cd_clear">TODO Clear</string>
-    <string name="cd_play_video">TODO Play video</string>
-    <string name="cd_unavailable_content">TODO Content unavailable</string>
+    <string name="cd_loading">Loading</string>
+    <string name="cd_video">Video</string>
+    <string name="cd_remove_from_favorites">Remove from favorites</string>
+    <string name="cd_add_to_favorites">Add to favorites</string>
+    <string name="cd_clear">Clear</string>
+    <string name="cd_play_video">Play video</string>
+    <string name="cd_unavailable_content">Content unavailable</string>
 
-    <string name="theme_toggle_to_light">TODO Switch to light mode</string>
-    <string name="theme_toggle_to_dark">TODO Switch to dark mode</string>
+    <string name="theme_toggle_to_light">Switch to light mode</string>
+    <string name="theme_toggle_to_dark">Switch to dark mode</string>
 
-    <string name="error_network">TODO No internet connection. Check your network.</string>
-    <string name="error_unauthorized">TODO Invalid API key. Check NASA_API_KEY in local.properties.</string>
-    <string name="error_rate_limited">TODO Rate limit reached. Try again in a few minutes.</string>
-    <string name="error_server_unavailable">TODO NASA server not responding. Try later.</string>
-    <string name="error_invalid_date">TODO Invalid date format. Use YYYY-MM-DD (got: \'%1$s\').</string>
-    <string name="error_http">TODO HTTP error %1$d: %2$s</string>
-    <string name="error_unknown">TODO Unknown error</string>
+    <string name="error_network">No internet connection. Check your network.</string>
+    <string name="error_unauthorized">Invalid API key. Check NASA_API_KEY in local.properties.</string>
+    <string name="error_rate_limited">Rate limit reached. Try again in a few minutes.</string>
+    <string name="error_server_unavailable">NASA server not responding. Try later.</string>
+    <string name="error_invalid_date">Invalid date format. Use YYYY-MM-DD (got: \'%1$s\').</string>
+    <string name="error_http">HTTP error %1$d: %2$s</string>
+    <string name="error_unknown">Unknown error</string>
 </resources>
