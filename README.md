@@ -23,20 +23,20 @@ git clone <repo>
 cd 2026-05-23_space_explorer
 ```
 
-Crea `local.properties` con tu sdk path y opcionalmente una NASA API key
-(si no, se usa `DEMO_KEY` con limite de 30 req/h):
-
-```
-sdk.dir=C:\\Users\\<user>\\AppData\\Local\\Android\\Sdk
-NASA_API_KEY=tu_api_key_o_DEMO_KEY
-```
-
 Build y run:
 
 ```
 ./gradlew assembleDebug
 ./gradlew installDebug
 ```
+
+El repo trae `local.properties` con `NASA_API_KEY=DEMO_KEY` para que clonar y
+correr funcione sin setup. Para subir el rate limit, pega tu propia key
+gratuita de https://api.nasa.gov sobre esa linea.
+
+Si usas Gradle desde la terminal sin Android Studio abierto, exporta
+`ANDROID_HOME` apuntando al SDK. Si abres el proyecto en Android Studio,
+el IDE agrega `sdk.dir` al `local.properties` solo en el primer sync.
 
 ## Tests
 

@@ -33,9 +33,6 @@
 # OS
 .DS_Store
 
-# Local config (contains API key & SDK path)
-local.properties
-
 # Per-developer Gradle overrides (e.g. org.gradle.java.home for Windows)
 gradle.properties.local
 
