@@ -90,6 +90,13 @@ tasks.withType<Test>().configureEach {
     }
 }
 
+if (project.findProperty("composeMetricsEnabled") == "true") {
+    composeCompiler {
+        reportsDestination.set(layout.buildDirectory.dir("compose_compiler"))
+        metricsDestination.set(layout.buildDirectory.dir("compose_compiler"))
+    }
+}
+
 dependencies {
     // AndroidX Core
     implementation(libs.androidx.core.ktx)
@@ -149,6 +156,7 @@ dependencies {
     testImplementation(libs.androidx.arch.core.testing)
     testImplementation(libs.room.testing)
     testImplementation(libs.androidx.ui.test.junit4)
+    testImplementation(libs.konsist)
     debugImplementation(libs.androidx.ui.test.manifest)
 
     // Instrumented Testing

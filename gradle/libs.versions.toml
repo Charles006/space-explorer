@@ -31,6 +31,7 @@ materialIconsExtended = "1.7.5"
 kover = "0.8.3"
 detekt = "1.23.7"
 spotless = "6.25.0"
+konsist = "0.17.3"
 
 [libraries]
 # AndroidX Core
@@ -98,6 +99,7 @@ androidx-arch-core-testing = { group = "androidx.arch.core", name = "core-testin
 
 # Static analysis
 detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
+konsist = { group = "com.lemonappdev", name = "konsist", version.ref = "konsist" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
